@@ -96,22 +96,18 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           physics: physics,
           child: Column(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  for (int i = 0; i < widget.children.length; ++i)
-                    KeyedSubtree(
-                      key: globalKeys[i],
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: widget.children[i],
-                          ),
-                        ],
+              for (int i = 0; i < widget.children.length; ++i)
+                KeyedSubtree(
+                  key: globalKeys[i],
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: widget.children[i],
                       ),
-                    ),
-                  if (widget.footer case Widget footer) footer,
-                ],
-              ),
+                    ],
+                  ),
+                ),
+              if (widget.footer case Widget footer) footer,
             ],
           ),
         );
