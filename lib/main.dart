@@ -1,9 +1,5 @@
 import "package:flutter/material.dart";
-import "package:portfolio/section/about_me.dart";
-import "package:portfolio/section/contact_info.dart";
-import "package:portfolio/section/education.dart";
-import "package:portfolio/section/introduction.dart";
-import "package:portfolio/section/projects.dart";
+import "package:portfolio/section.dart";
 import "package:portfolio/shared/constants/colors.dart" as colors;
 import "package:portfolio/shared/constants/colors.dart";
 import "package:portfolio/shared/widgets/vertical_tab_view.dart";
@@ -107,9 +103,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 controller: tabController,
 
                 /// Make the indicator act like a transparent "pill"
-                indicator: BoxDecoration(
-                  color: const Color(0x10FFFFFF),
-                  borderRadius: BorderRadius.circular(32.0),
+                indicator: const BoxDecoration(
+                  color: Color(0x10FFFFFF),
+                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
                 ),
 
                 /// Make the indicator take up the whole tab.
@@ -134,7 +130,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
                 /// React on tap.
                 tabs: <Widget>[
-                  for (var (:String name, body: _) in sections) Tab(text: name),
+                  for (var (:String name, body: _) in sections) //
+                    Tab(icon: Text(name)),
                 ],
               ),
             ),
