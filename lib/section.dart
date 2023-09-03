@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:portfolio/shared/constants/colors.dart";
 import "package:portfolio/shared/extensions.dart";
-import "package:portfolio/shared/scroll_delta.dart";
 import "package:provider/provider.dart";
 
 base class AboutMeSection extends StatefulWidget {
@@ -50,76 +49,69 @@ class _AboutMeSectionState extends State<AboutMeSection> with TickerProviderStat
       opacity = 0.25;
     }
 
-    double dy = context.select((ScrollDeltaChangeNotifier delta) => delta.dy);
-    Matrix4 transformation = Matrix4(1, dy / 100, 0, 0, 0, 1-dy/100, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    print(transformation);
-
     return Focus(
       focusNode: focusNode,
-      child: Transform(
-        transform: transformation,
-        child: AnimatedOpacity(
-          opacity: opacity,
-          duration: 250.ms,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
-            child: Column(
-              children: <Widget>[
-                Text("About Me", style: theme.textTheme.titleLarge),
-                const SizedBox(height: 64.0),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width / 1.5,
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        /// Element 0: Image.
-                        Expanded(
-                          child: DecoratedBox(
-                            decoration: const BoxDecoration(color: Colors.grey),
-                            child: Row(
-                              children: <Widget>[
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Container(
-                                    width: 256.0,
-                                    height: 256.0,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        /// Spacer.
-                        const SizedBox(width: 64.0),
-
-                        /// Element 1: Info.
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+      child: AnimatedOpacity(
+        opacity: opacity,
+        duration: 250.ms,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
+          child: Column(
+            children: <Widget>[
+              Text("About Me", style: theme.textTheme.titleLarge),
+              const SizedBox(height: 64.0),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width / 1.5,
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      /// Element 0: Image.
+                      Expanded(
+                        child: DecoratedBox(
+                          decoration: const BoxDecoration(color: Colors.grey),
+                          child: Row(
                             children: <Widget>[
-                              Text(
-                                "I am graduate of Computer Science in the Technological Institute of the Philippines - Quezon City.",
-                                textAlign: TextAlign.right,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              const Text(""),
-                              Text(
-                                "I started my programming journey since I was 15 years old, after the subject was introduced to me in my high school. Since then, I have been passionate in creating coding projects that I find interesting.",
-                                textAlign: TextAlign.right,
-                                style: theme.textTheme.bodyMedium,
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Container(
+                                  width: 256.0,
+                                  height: 256.0,
+                                  color: Colors.green,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+
+                      /// Spacer.
+                      const SizedBox(width: 64.0),
+
+                      /// Element 1: Info.
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Text(
+                              "I am graduate of Computer Science in the Technological Institute of the Philippines - Quezon City.",
+                              textAlign: TextAlign.right,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            const Text(""),
+                            Text(
+                              "I started my programming journey since I was 15 years old, after the subject was introduced to me in my high school. Since then, I have been passionate in creating coding projects that I find interesting.",
+                              textAlign: TextAlign.right,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
