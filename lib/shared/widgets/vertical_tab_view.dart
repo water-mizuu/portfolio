@@ -96,7 +96,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
   @override
   Widget build(BuildContext context) {
     return MouseScroll(
-      duration: 128.ms,
+      duration: 500.ms,
       curve: Curves.easeOut,
       controller: scrollController,
       builder: (BuildContext context, ScrollController scrollController, ScrollPhysics physics) {
