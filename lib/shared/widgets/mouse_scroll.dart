@@ -5,17 +5,20 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 class MouseScroll extends StatelessWidget {
-  MouseScroll({
+  const MouseScroll({
     required this.builder,
     required this.controller,
     this.mobilePhysics = kMobilePhysics,
     this.duration = const Duration(milliseconds: 100),
     this.curve = Curves.linear,
     super.key,
-  }) : scrollState = ScrollState(mobilePhysics, duration, curve, controller);
+  });
 
-  final ScrollState scrollState;
-  final Widget Function(BuildContext, ScrollPhysics) builder;
+  final Widget Function(
+    BuildContext context,
+    ScrollController controller,
+    ScrollPhysics physics,
+  ) builder;
   final ScrollPhysics mobilePhysics;
   final Duration duration;
   final Curve curve;
@@ -23,13 +26,27 @@ class MouseScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ScrollState>.value(
-      value: scrollState,
-      builder: (BuildContext context, _) {
-        return Listener(
-          onPointerSignal: scrollState.handleDesktopScroll,
-          onPointerDown: scrollState.handleTouchScroll,
-          child: builder(context, context.select((ScrollState s) => s.physics)),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return ChangeNotifierProvider<ScrollState>(
+          create: (BuildContext context) => ScrollState(mobilePhysics, duration, curve, controller),
+          builder: (BuildContext context, _) {
+            ScrollState scrollState = context.read<ScrollState>();
+
+            return NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification case ScrollEndNotification _) {
+                  scrollState.futurePosition = controller.offset;
+                }
+                return false;
+              },
+              child: Listener(
+                onPointerSignal: scrollState.handleDesktopScroll,
+                onPointerDown: scrollState.handleTouchScroll,
+                child: builder(context, controller, context.select((ScrollState s) => s.physics)),
+              ),
+            );
+          },
         );
       },
     );
@@ -60,6 +77,7 @@ class ScrollState with ChangeNotifier {
     if (physics == kMobilePhysics) {
       physics = kDesktopPhysics;
       notifyListeners();
+      return;
     }
 
     if (event is PointerScrollEvent) {
@@ -91,6 +109,7 @@ class ScrollState with ChangeNotifier {
     if (physics == kDesktopPhysics) {
       physics = mobilePhysics;
       notifyListeners();
+      return;
     }
   }
 }
