@@ -433,12 +433,14 @@ class _ProjectsSectionState extends State<ProjectsSection> {
     super.initState();
 
     pulsar = _Pulsar();
-    itemIndex = 0;
     focusNode = FocusNode();
+
+    itemIndex = 0;
   }
 
   @override
   void dispose() {
+    pulsar.dispose();
     focusNode.dispose();
 
     super.dispose();
@@ -463,6 +465,10 @@ class _ProjectsSectionState extends State<ProjectsSection> {
           return;
         }
 
+        assert(
+          event is KeyDownEvent,
+          "KeyDown & KeyUp events are the only events that should be passed to this method.",
+        );
         switch (event.physicalKey) {
           case PhysicalKeyboardKey.arrowLeft:
             pulsar.move(_Movement.previous);
@@ -590,9 +596,9 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   /// The index of the currently highlighted project tile.
   late int activeIndex;
 
-  late final int renderCount = 5;
-  late final int logicalCount = renderCount + 2;
-  late final int projectCount = widget.projects.length;
+  static const int renderCount = 5;
+  static const int logicalCount = renderCount + 2;
+  int get projectCount => widget.projects.length;
 
   void resetAnimation() {
     animationController.reset();
@@ -678,6 +684,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     isAnimating = true;
     await animationController.forward(from: 0.0);
     isAnimating = false;
+
     setState(() {
       activeIndex -= 1;
       resetAnimation();

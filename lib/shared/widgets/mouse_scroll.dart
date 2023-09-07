@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_breaks
+
 import "dart:async";
 
 import "package:flutter/gestures.dart";
