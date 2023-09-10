@@ -1,12 +1,13 @@
 import "package:flutter/material.dart";
+import "package:flutter/src/gestures/events.dart";
 import "package:portfolio/section.dart";
-import "package:portfolio/shared/constants/colors.dart" as colors;
 import "package:portfolio/shared/constants/colors.dart";
 import "package:portfolio/shared/widgets/vertical_tab_view.dart";
 import "package:provider/provider.dart";
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -16,11 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Flutter Demo",
       theme: ThemeData(
         brightness: Brightness.dark,
-        colorScheme: const ColorScheme.dark(
-          background: colors.backgroundColor,
+        colorScheme: const ColorScheme.dark().copyWith(
+          background: backgroundColor,
         ),
         fontFamily: "Inter",
         textTheme: const TextTheme(
@@ -49,7 +51,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-typedef Section = ({Widget body, String name});
+typedef Section = ({String name, Widget body});
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -61,22 +63,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  static const List<Section> sections = <Section>[
+  static const List<Section> sections = [
     (name: "Introduction", body: IntroductionSection(index: 0)),
     (name: "About Me", body: AboutMeSection(index: 1)),
-    (name: "Education", body: EducationSection(index: 2)),
-    (name: "Projects", body: ProjectsSection(index: 3)),
-    (name: "Contact Info", body: ContactInfoSection(index: 4)),
+    (name: "Projects", body: ProjectsSection(index: 2)),
+    (name: "Contact Info", body: ContactInfoSection(index: 3)),
   ];
 
   late final TabController tabController;
-  late bool isDragging;
 
   @override
   void initState() {
     super.initState();
 
-    isDragging = false;
     tabController = TabController(length: sections.length, vsync: this);
   }
 
@@ -91,82 +90,85 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return NotificationListener<ScrollNotification>(
-      child: Stack(
-        children: <Widget>[
-          Scaffold(
-            appBar: AppBar(
-              backgroundColor: theme.colorScheme.background,
-              scrolledUnderElevation: 0,
-              title: Row(
-                children: <Widget>[
-                  Expanded(child: Container()),
-                  FittedBox(
-                    child: TabBar(
-                      controller: tabController,
+    return Stack(
+      children: [
+        MouseRegion(
+          onHover: (PointerHoverEvent e) {
+            print(e);
+          },
+          cursor: SystemMouseCursors.click,
+          child: SizedBox.expand(
+            child: ColoredBox(color: theme.colorScheme.background),
+          ),
+        ),
+        Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            scrolledUnderElevation: 0,
+            title: Row(
+              children: [
+                const Spacer(),
+                TabBar(
+                  controller: tabController,
 
-                      /// Make the indicator act like a transparent "pill"
-                      indicator: const BoxDecoration(
-                        color: Color(0x10FFFFFF),
-                        borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                      ),
-
-                      /// Make the indicator take up the whole tab.
-                      indicatorSize: TabBarIndicatorSize.tab,
-
-                      /// Remove the automatic violet highlight when a tab is pressed.
-                      labelColor: Colors.white,
-
-                      /// Remove the bottom border of the tab widget.
-                      dividerColor: Colors.transparent,
-
-                      /// Make the tab buttons shrinkable.
-                      isScrollable: true,
-
-                      /// Disable splash.
-                      splashFactory: NoSplash.splashFactory,
-                      overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) => states.contains(MaterialState.focused) //
-                            ? null
-                            : Colors.transparent,
-                      ),
-
-                      /// React on tap.
-                      tabs: <Widget>[
-                        for (var (:String name, body: _) in sections) //
-                          Tab(icon: Text(name)),
-                      ],
-                    ),
+                  /// Make the indicator act like a transparent "pill"
+                  indicator: const BoxDecoration(
+                    color: Color(0x10FFFFFF),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
                   ),
-                ],
-              ),
-            ),
-            body: ChangeNotifierProvider<TabController>.value(
-              value: tabController,
-              child: VerticalTabBarView(
-                tabController: tabController,
-                footer: const Column(
-                  children: <Widget>[
-                    ColoredBox(
-                      color: Colors.transparent,
-                      child: SizedBox(height: 384.0 - 64.0 - 16.0 - 4.0),
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text("Created with Flutter and Dart."),
-                      ],
-                    ),
-                    SizedBox(height: 32.0),
+
+                  /// Make the indicator take up the whole tab.
+                  indicatorSize: TabBarIndicatorSize.tab,
+
+                  /// Remove the automatic violet highlight when a tab is pressed.
+                  labelColor: Colors.white,
+
+                  /// Remove the bottom border of the tab widget.
+                  dividerColor: Colors.transparent,
+
+                  /// Make the tab buttons shrinkable.
+                  isScrollable: true,
+
+                  /// Disable splash.
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) => states.contains(MaterialState.focused) //
+                        ? null
+                        : Colors.transparent,
+                  ),
+
+                  /// React on tap.
+                  tabs: [
+                    for (var (:String name, body: _) in sections) //
+                      Tab(icon: Text(name)),
                   ],
                 ),
-                children: <Widget>[
-                  for (var (name: _, :Widget body) in sections) body,
-                ],
-              ),
+              ],
             ),
           ),
-        ],
-      ),
+          backgroundColor: Colors.transparent,
+          body: ChangeNotifierProvider<TabController>.value(
+            value: tabController,
+            child: VerticalTabBarView(
+              tabController: tabController,
+              footer: const Column(
+                children: [
+                  SizedBox(height: 384.0 - 64.0 - 16.0 - 4.0),
+                  Column(
+                    children: [
+                      Text("Created with Flutter and Dart."),
+                    ],
+                  ),
+                  SizedBox(height: 32.0),
+                ],
+              ),
+              children: [
+                for (var (name: _, :Widget body) in sections) body,
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

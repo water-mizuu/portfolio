@@ -49,7 +49,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
     isDragging = false;
     isClicking = false;
 
-    globalKeys = <GlobalKey>[
+    globalKeys = [
       for (int i = 0; i < widget.children.length; ++i) GlobalKey(),
     ];
 
@@ -96,7 +96,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
   @override
   Widget build(BuildContext context) {
     return MouseScroll(
-      duration: 500.ms,
+      duration: 150.ms,
       curve: Curves.easeOut,
       controller: scrollController,
       builder: (BuildContext context, ScrollController scrollController, ScrollPhysics physics) {
@@ -105,7 +105,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           physics: physics,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
+            children: [
               for (int i = 0; i < widget.children.length; ++i)
                 KeyedSubtree(key: globalKeys[i], child: widget.children[i]),
               if (widget.footer case Widget footer) footer,
