@@ -57,7 +57,7 @@ class _AboutMeSectionState extends State<AboutMeSection> with TickerProviderStat
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: <Widget>[
+            children: [
               Text("About Me", style: theme.textTheme.titleLarge),
               const SizedBox(height: 64.0),
               SizedBox(
@@ -65,13 +65,13 @@ class _AboutMeSectionState extends State<AboutMeSection> with TickerProviderStat
                 child: IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       /// Element 0: Image.
                       Expanded(
                         child: DecoratedBox(
                           decoration: const BoxDecoration(color: Colors.grey),
                           child: Row(
-                            children: <Widget>[
+                            children: [
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Container(
@@ -90,21 +90,10 @@ class _AboutMeSectionState extends State<AboutMeSection> with TickerProviderStat
 
                       /// Element 1: Info.
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                              "I am graduate of Computer Science in the Technological Institute of the Philippines - Quezon City.",
-                              textAlign: TextAlign.right,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            const Text(""),
-                            Text(
-                              "I started my programming journey since I was 15 years old, after the subject was introduced to me in my high school. Since then, I have been passionate in creating coding projects that I find interesting.",
-                              textAlign: TextAlign.right,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ],
+                        child: Text(
+                          "I am graduate of Computer Science in the Technological Institute of the Philippines - Quezon City.\n\nI started my programming journey since I was 15 years old, after the subject was introduced to me in my high school. Since then, I have been passionate in creating coding projects that I find interesting.",
+                          textAlign: TextAlign.right,
+                          style: theme.textTheme.bodyMedium,
                         ),
                       ),
                     ],
@@ -159,7 +148,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: <Widget>[
+            children: [
               Text(
                 "Contact Info",
                 style: theme.textTheme.titleLarge,
@@ -168,9 +157,9 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
               SizedBox(
                 width: MediaQuery.sizeOf(context).width / 3,
                 child: Table(
-                  children: <TableRow>[
+                  children: [
                     TableRow(
-                      children: <Widget>[
+                      children: [
                         Text(
                           "Email: ",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -183,7 +172,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: <Widget>[
+                      children: [
                         Text(
                           "Mobile Number: ",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -196,7 +185,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: <Widget>[
+                      children: [
                         Text("", style: theme.textTheme.bodyMedium),
                         Text("", style: theme.textTheme.bodyMedium),
                       ],
@@ -204,7 +193,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
 
                     ///
                     TableRow(
-                      children: <Widget>[
+                      children: [
                         Text(
                           "Facebook:",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -217,7 +206,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: <Widget>[
+                      children: [
                         Text(
                           "GitHub:",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -230,7 +219,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: <Widget>[
+                      children: [
                         Text(
                           "LinkedIn:",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -244,93 +233,6 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-base class EducationSection extends StatefulWidget {
-  const EducationSection({required this.index, super.key});
-
-  final int index;
-
-  @override
-  State<EducationSection> createState() => _EducationSectionState();
-}
-
-class _EducationSectionState extends State<EducationSection> {
-  late final FocusNode focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-
-    focusNode = FocusNode();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    int index = context.select((TabController controller) => controller.index);
-    ThemeData theme = Theme.of(context);
-
-    double opacity;
-    if (widget.index == index) {
-      opacity = 1.0;
-      focusNode.requestFocus();
-    } else {
-      opacity = 0.25;
-    }
-
-    return Focus(
-      focusNode: focusNode,
-      child: AnimatedOpacity(
-        opacity: opacity,
-        duration: 250.ms,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
-          child: Column(
-            children: <Widget>[
-              Text(
-                "Education",
-                style: theme.textTheme.titleLarge,
-              ),
-              const SizedBox(height: 64.0),
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Angeles City Science High School",
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    "Senior High School - STEM Track",
-                    style: theme.textTheme.titleSmall?.copyWith(fontStyle: FontStyle.italic),
-                  ),
-                  const Text(""),
-                  Text("Year 11 - with High Honors", style: theme.textTheme.bodyMedium),
-                  Text("Year 12 - with Highest Honors", style: theme.textTheme.bodyMedium),
-                ],
-              ),
-              const SizedBox(height: 48.0),
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Technological Institute of the Philippines",
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    "Undergraduate Studies - Computer Science",
-                    style: theme.textTheme.titleSmall?.copyWith(fontStyle: FontStyle.italic),
-                  ),
-                  const Text(""),
-                  Text("Year 1 Unit 1 - Dean's List", style: theme.textTheme.bodyMedium),
-                  Text("Year 1 Unit 2 - President's List", style: theme.textTheme.bodyMedium),
-                ],
               ),
             ],
           ),
@@ -381,7 +283,7 @@ class _IntroductionSectionState extends State<IntroductionSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: <Widget>[
+            children: [
               Text("Michael.", style: theme.textTheme.titleLarge),
               const SizedBox(height: 8.0),
               Text("Software Engineer & Programmer", style: theme.textTheme.titleSmall),
@@ -415,7 +317,7 @@ base class ProjectsSection extends StatefulWidget {
 }
 
 class _ProjectsSectionState extends State<ProjectsSection> {
-  static final List<_Project> _projects = <_Project>[
+  static final List<_Project> _projects = [
     (iconPath: "assets/images/2048.png", name: "2048"),
     (iconPath: "assets/images/advent_of_code.png", name: "AOC 2022"),
     (iconPath: "assets/images/portfolio.png", name: "(This) Portfolio"),
@@ -465,10 +367,6 @@ class _ProjectsSectionState extends State<ProjectsSection> {
           return;
         }
 
-        assert(
-          event is KeyDownEvent,
-          "KeyDown & KeyUp events are the only events that should be passed to this method.",
-        );
         switch (event.physicalKey) {
           case PhysicalKeyboardKey.arrowLeft:
             pulsar.move(_Movement.previous);
@@ -483,7 +381,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: <Widget>[
+            children: [
               Text("Projects", style: theme.textTheme.titleLarge),
               const SizedBox(height: 64.0),
               _ProjectDisplay(projects: _projects, pulsar: pulsar),
@@ -537,7 +435,7 @@ class _ProjectTile extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        children: <Widget>[
+        children: [
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0x8FFFFFFF)),
@@ -577,17 +475,17 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
 
   /// The "targets", which just refers to the opacity and offset of each project tile before animation.
   late final List<double> opacityTargets;
-  late final List<Offset> offsetTargets;
+  late final List<Offset> translationTargets;
   late final List<double> scaleTargets;
 
   /// These are the animating values, which is initialized after the first frame.
   late List<Animation<double>> opacities;
-  late List<Animation<Offset>> offsets;
+  late List<Animation<Offset>> translations;
   late List<Animation<double>> scales;
 
   /// Flags used to prevent recomputing the opacity and offset targets.
   bool hasLoadedOpacityTargets = false;
-  bool hasLoadedOffsetTargets = false;
+  bool hasLoadedTranslationTargets = false;
   bool hasLoadedScaleTargets = false;
 
   /// Used to prevent the user from spamming the arrow keys.
@@ -610,8 +508,8 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
       ];
     }
 
-    if (hasLoadedOffsetTargets) {
-      offsets = <Animation<Offset>>[
+    if (hasLoadedTranslationTargets) {
+      translations = <Animation<Offset>>[
         for (int i = 0; i < logicalCount; ++i) //
           const AlwaysStoppedAnimation<Offset>(Offset.zero),
       ];
@@ -632,7 +530,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
 
   void computeOpacityTargets() {
     if (!hasLoadedOpacityTargets) {
-      opacityTargets = <double>[
+      opacityTargets = [
         for (int i = 0; i < logicalCount; ++i) //
           opacityInterpolation(i),
       ];
@@ -640,20 +538,21 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     hasLoadedOpacityTargets = true;
   }
 
-  void computeOffsetTargets() {
-    if (!hasLoadedOffsetTargets) {
-      offsetTargets = <Offset>[
+  void computeTranslationTargets() {
+    if (!hasLoadedTranslationTargets) {
+      translationTargets = [
         for (int i = 0; i < logicalCount; ++i)
           if (globalKeys[i].currentContext?.findRenderObject() case RenderBox renderBox)
             renderBox.localToGlobal(Offset.zero),
       ];
+      print(translationTargets);
     }
-    hasLoadedOffsetTargets = true;
+    hasLoadedTranslationTargets = true;
   }
 
   void computeScaleTargets() {
     if (!hasLoadedScaleTargets) {
-      scaleTargets = <double>[
+      scaleTargets = [
         for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
           if (i == 0) 1.0 else 0.75,
       ];
@@ -662,27 +561,32 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   }
 
   Future<void> highlightPreviousItem() async {
+    if (isAnimating) {
+      return;
+    }
+
     opacities = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
-          Tween<double>(begin: opacityTargets[i], end: opacityTargets[(i + 1) % logicalCount]),
+          Tween<double>(begin: opacityTargets.cyclicAt(i), end: opacityTargets.cyclicAt(i + 1)),
         ),
     ];
-    offsets = <Animation<Offset>>[
+    translations = <Animation<Offset>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
-          Tween<Offset>(begin: Offset.zero, end: offsetTargets[(i + 1) % logicalCount] - offsetTargets[i]),
+          Tween<Offset>(begin: Offset.zero, end: translationTargets.cyclicAt(i + 1) - translationTargets.cyclicAt(i)),
         ),
     ];
     scales = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
-          Tween<double>(begin: scaleTargets[i], end: scaleTargets[(i + 1) % logicalCount]),
+          Tween<double>(begin: scaleTargets.cyclicAt(i), end: scaleTargets.cyclicAt(i + 1)),
         ),
     ];
 
     isAnimating = true;
     await animationController.forward(from: 0.0);
+
     isAnimating = false;
 
     setState(() {
@@ -692,39 +596,44 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   }
 
   Future<void> highlightNextItem() async {
+    if (isAnimating) {
+      return;
+    }
+
     opacities = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
-          Tween<double>(begin: opacityTargets[i], end: opacityTargets[(i - 1) % logicalCount]),
+          Tween<double>(begin: opacityTargets.cyclicAt(i), end: opacityTargets.cyclicAt(i - 1)),
         ),
     ];
-    offsets = <Animation<Offset>>[
+    translations = <Animation<Offset>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
-          Tween<Offset>(begin: Offset.zero, end: offsetTargets[(i - 1) % logicalCount] - offsetTargets[i]),
+          Tween<Offset>(begin: Offset.zero, end: translationTargets.cyclicAt(i - 1) - translationTargets.cyclicAt(i)),
         ),
     ];
     scales = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
-          Tween<double>(begin: scaleTargets[i], end: scaleTargets[(i - 1) % logicalCount]),
+          Tween<double>(begin: scaleTargets.cyclicAt(i), end: scaleTargets.cyclicAt(i - 1)),
         ),
     ];
 
     isAnimating = true;
     await animationController.forward(from: 0.0);
     isAnimating = false;
+
     setState(() {
       activeIndex += 1;
+      resetAnimation();
     });
-    resetAnimation();
   }
 
   @override
   void initState() {
     super.initState();
 
-    globalKeys = <GlobalKey>[for (int i = 0; i < logicalCount; ++i) GlobalKey()];
+    globalKeys = [for (int i = 0; i < logicalCount; ++i) GlobalKey()];
     animationController = AnimationController(vsync: this, duration: 250.ms);
 
     isAnimating = false;
@@ -744,22 +653,24 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     /// Call computeOffsets after rendering the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       computeOpacityTargets();
-      computeOffsetTargets();
       computeScaleTargets();
-      resetAnimation();
+      computeTranslationTargets();
+      setState(() {
+        resetAnimation();
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return UnconstrainedBox(
-      clipBehavior: Clip.hardEdge,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Row(
-        children: <Widget>[
+        children: [
           for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
-            if (widget.projects[(i + activeIndex) % projectCount] case (:String iconPath, :String name)) ...<Widget>[
-              const SizedBox(width: 8.0),
-              if (i == 0) ...<Widget>[
+            if (widget.projects[(i + activeIndex) % projectCount] case (:String iconPath, :String name)) ...[
+              if (i == 0) ...[
+                const SizedBox(width: 8.0),
                 GestureDetector(
                   onTap: highlightPreviousItem,
                   child: const MouseRegion(
@@ -768,18 +679,33 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
                   ),
                 ),
                 const SizedBox(width: 8.0),
+              ] else ...[
+                const SizedBox(width: 8.0),
               ],
               AnimatedBuilder(
                 animation: animationController,
                 builder: (BuildContext context, Widget? child) {
                   int v = i + renderCount ~/ 2 + 1;
-                  return Transform.translate(
-                    offset: hasLoadedOffsetTargets ? offsets[v].value : Offset.zero,
+
+                  double opacity = hasLoadedOpacityTargets ? opacities[v].value : opacityInterpolation(v);
+                  Offset translation = hasLoadedTranslationTargets ? translations[v].value : Offset.zero;
+                  double scale = hasLoadedScaleTargets ? scales[v].value : (i == 0 ? 1.0 : 0.75);
+
+                  return KeyedSubtree(
+                    key: globalKeys[v],
                     child: Opacity(
-                      opacity: hasLoadedOpacityTargets ? opacities[v].value : opacityInterpolation(v),
-                      key: globalKeys[v],
-                      child: Transform.scale(
-                        scale: hasLoadedScaleTargets ? scales[v].value : (i == 0 ? 1.0 : 0.5),
+                      opacity: opacity,
+
+                      /// The hierarchy of transformations is as follows:
+                      ///  1. Scale
+                      ///  2. Translate
+                      ///
+                      /// This is important as the scale transformation will affect the offset of the child.
+                      child: Transform(
+                        transform: Matrix4.identity()
+                          ..translate(translation.dx, translation.dy)
+                          ..scale(scale),
+                        alignment: Alignment.center,
                         child: child,
                       ),
                     ),
@@ -790,7 +716,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
                   title: FittedBox(fit: BoxFit.scaleDown, child: Text(name)),
                 ),
               ),
-              if (i == 0) ...<Widget>[
+              if (i == 0) ...[
                 const SizedBox(width: 8.0),
                 GestureDetector(
                   onTap: highlightNextItem,
@@ -799,8 +725,10 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
                     child: Icon(Icons.arrow_forward_ios),
                   ),
                 ),
+                const SizedBox(width: 8.0),
+              ] else ...[
+                const SizedBox(width: 8.0),
               ],
-              const SizedBox(width: 8.0),
             ],
         ],
       ),
