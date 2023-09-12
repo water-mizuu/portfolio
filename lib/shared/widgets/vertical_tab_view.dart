@@ -7,12 +7,14 @@ import "package:portfolio/shared/widgets/mouse_scroll.dart";
 class VerticalTabBarView extends StatefulWidget {
   const VerticalTabBarView({
     required this.tabController,
+    required this.scrollController,
     required this.children,
     this.footer,
     super.key,
   });
 
   final TabController tabController;
+  final ScrollController scrollController;
   final List<Widget> children;
   final Widget? footer;
 
@@ -22,7 +24,6 @@ class VerticalTabBarView extends StatefulWidget {
 
 class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTickerProviderStateMixin {
   late final List<GlobalKey> globalKeys;
-  late final ScrollController scrollController;
 
   late bool isDragging;
   late bool isClicking;
@@ -33,13 +34,6 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
       await Scrollable.ensureVisible(context, duration: 250.ms, curve: Curves.easeOut);
       isDragging = false;
     }
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -65,31 +59,30 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           isDragging = false;
         }
       });
-      scrollController = ScrollController()
-        ..addListener(() {
-          if (isDragging) {
-            return;
-          }
+      widget.scrollController.addListener(() {
+        if (isDragging) {
+          return;
+        }
 
-          (int, double)? lowest;
-          for (var (int index, GlobalKey key) in globalKeys.indexed) {
-            if (key.currentContext?.findRenderObject() case RenderBox renderBox) {
-              double offset = renderBox.localToGlobal(Offset.zero).dy.abs();
+        (int, double)? lowest;
+        for (var (int index, GlobalKey key) in globalKeys.indexed) {
+          if (key.currentContext?.findRenderObject() case RenderBox renderBox) {
+            double offset = renderBox.localToGlobal(Offset.zero).dy.abs();
 
-              switch (lowest) {
-                case null:
-                case (_, double lowestOffset) when offset < lowestOffset:
-                  lowest = (index, offset);
-              }
+            switch (lowest) {
+              case null:
+              case (_, double lowestOffset) when offset < lowestOffset:
+                lowest = (index, offset);
             }
           }
+        }
 
-          if (lowest case (int index, _) when tabController.index != index) {
-            isClicking = true;
-            tabController.animateTo(index);
-            isClicking = false;
-          }
-        });
+        if (lowest case (int index, _) when tabController.index != index) {
+          isClicking = true;
+          tabController.animateTo(index);
+          isClicking = false;
+        }
+      });
     }
   }
 
@@ -98,7 +91,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
     return MouseScroll(
       duration: 150.ms,
       curve: Curves.easeOut,
-      controller: scrollController,
+      controller: widget.scrollController,
       builder: (BuildContext context, ScrollController scrollController, ScrollPhysics physics) {
         return SingleChildScrollView(
           controller: scrollController,

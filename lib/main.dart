@@ -71,16 +71,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   ];
 
   late final TabController tabController;
+  late final ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
 
     tabController = TabController(length: sections.length, vsync: this);
+    scrollController = ScrollController();
   }
 
   @override
   void dispose() {
+    scrollController.dispose();
     tabController.dispose();
 
     super.dispose();
@@ -150,17 +153,21 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           body: ChangeNotifierProvider<TabController>.value(
             value: tabController,
             child: VerticalTabBarView(
+              scrollController: scrollController,
               tabController: tabController,
-              footer: const Column(
-                children: [
-                  SizedBox(height: 384.0 - 64.0 - 16.0 - 4.0),
-                  Column(
-                    children: [
-                      Text("Created with Flutter and Dart."),
-                    ],
-                  ),
-                  SizedBox(height: 32.0),
-                ],
+              footer: ColoredBox(
+                color: Colors.green,
+                child: const Column(
+                  children: [
+                    SizedBox(height: 384.0 - 64.0 - 16.0 - 4.0),
+                    Column(
+                      children: [
+                        Text("Created with Flutter and Dart."),
+                      ],
+                    ),
+                    SizedBox(height: 32.0),
+                  ],
+                ),
               ),
               children: [
                 for (var (name: _, :Widget body) in sections) body,
