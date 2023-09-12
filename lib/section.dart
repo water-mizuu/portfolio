@@ -318,11 +318,31 @@ base class ProjectsSection extends StatefulWidget {
 
 class _ProjectsSectionState extends State<ProjectsSection> {
   static final List<_Project> _projects = [
-    (iconPath: "assets/images/2048.png", name: "2048"),
-    (iconPath: "assets/images/advent_of_code.png", name: "AOC 2022"),
-    (iconPath: "assets/images/portfolio.png", name: "(This) Portfolio"),
-    (iconPath: "assets/images/leetcode.png", name: "LeetCode"),
-    (iconPath: "assets/images/peg_parser.png", name: "PEG Library"),
+    (
+      iconPath: "assets/images/2048.png",
+      name: "2048",
+      description: "Description 0",
+    ),
+    (
+      iconPath: "assets/images/advent_of_code.png",
+      name: "AOC 2022",
+      description: "Description 1",
+    ),
+    (
+      iconPath: "assets/images/portfolio.png",
+      name: "Portfolio",
+      description: "Description 2",
+    ),
+    (
+      iconPath: "assets/images/leetcode.png",
+      name: "LeetCode",
+      description: "Description 3",
+    ),
+    (
+      iconPath: "assets/images/peg_parser.png",
+      name: "PEG Library",
+      description: "Description 4",
+    ),
   ];
 
   late final _Pulsar pulsar;
@@ -399,7 +419,7 @@ enum _Movement {
   next;
 }
 
-typedef _Project = ({String iconPath, String name});
+typedef _Project = ({String iconPath, String name, String description});
 
 /// A convoluted way to pass events downward. (Isn't it usually upwards?)
 class _Pulsar extends ChangeNotifier {
@@ -415,43 +435,166 @@ class _Pulsar extends ChangeNotifier {
   }
 }
 
-class _ProjectTile extends StatelessWidget {
+class _ProjectTile extends StatefulWidget {
   const _ProjectTile({
     required this.icon,
     required this.title,
+    required this.description,
+    required this.isSelected,
   });
 
   static const double _imageWidth = 256;
 
   final Widget icon;
   final Widget title;
+  final Widget description;
+  final bool isSelected;
+
+  @override
+  State<_ProjectTile> createState() => _ProjectTileState();
+}
+
+class _ProjectTileState extends State<_ProjectTile> {
+  late bool isActive;
+
+  @override
+  void initState() {
+    super.initState();
+
+    isActive = false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: textColor),
-        borderRadius: BorderRadius.circular(2.0),
-      ),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0x8FFFFFFF)),
-              borderRadius: BorderRadius.circular(2.0),
-            ),
-            width: _imageWidth,
-            child: AspectRatio(
-              aspectRatio: 1 / 1,
-              child: icon,
-            ),
+    ThemeData theme = Theme.of(context);
+    if (widget.isSelected) {
+      return GestureDetector(
+        onTap: () async {
+          if (!widget.isSelected) {
+            return;
+          }
+
+          setState(() {
+            isActive = !isActive;
+          });
+        },
+
+        /// If it is active, then we want the ui to be like:
+        ///
+        /// + - - - - - - - - - - - - - - - - - - - - - - +
+        /// | + - - - - - + | Non-Scrollable View         |
+        /// | |           | |                             |
+        /// | |           | |                             |
+        /// | |           | |                             |
+        /// | + - - - - - + |                             |
+        /// |     TITLE     |                             |
+        /// |  Description  |                         [x] |
+        /// + - - - - - - - - - + - - - - - - - - - - - - +
+        ///
+        /// Otherwise, we want the ui to be like:
+        ///
+        /// + - - - - - - - +
+        /// | + - - - - - + |
+        /// | |           | |
+        /// | |           | |
+        /// | |           | |
+        /// | + - - - - - + |
+        /// |     TITLE     |
+        /// + - - - - - - - +
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: textColor),
+            borderRadius: BorderRadius.circular(2.0),
           ),
-          const SizedBox(height: 8.0),
-          SizedBox(width: _imageWidth, child: title),
-        ],
-      ),
-    );
+          padding: const EdgeInsets.all(16.0),
+          child: Stack(
+            children: [
+              if (isActive) ...[
+                IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      // The image & title & description
+                      Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: const Color(0x8FFFFFFF)),
+                              borderRadius: BorderRadius.circular(2.0),
+                            ),
+                            width: _ProjectTile._imageWidth,
+                            child: AspectRatio(
+                              aspectRatio: 1 / 1,
+                              child: widget.icon,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          SizedBox(width: _ProjectTile._imageWidth, child: widget.title),
+                          SizedBox(width: _ProjectTile._imageWidth, child: widget.description),
+                        ],
+                      ),
+                      const VerticalDivider(width: 32.0, color: Colors.white),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Hello world!", style: theme.textTheme.titleMedium),
+                            const SizedBox(height: 16.0),
+                            Text("lorem ipsum dolor sit", style: theme.textTheme.bodyMedium),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ] else ...[
+                Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0x8FFFFFFF)),
+                        borderRadius: BorderRadius.circular(2.0),
+                      ),
+                      width: _ProjectTile._imageWidth,
+                      child: AspectRatio(
+                        aspectRatio: 1 / 1,
+                        child: widget.icon,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    SizedBox(width: _ProjectTile._imageWidth, child: widget.title),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: textColor),
+          borderRadius: BorderRadius.circular(2.0),
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0x8FFFFFFF)),
+                borderRadius: BorderRadius.circular(2.0),
+              ),
+              width: _ProjectTile._imageWidth,
+              child: AspectRatio(
+                aspectRatio: 1 / 1,
+                child: widget.icon,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            SizedBox(width: _ProjectTile._imageWidth, child: widget.title),
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -478,6 +621,9 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   late final List<Offset> translationTargets;
   late final List<double> scaleTargets;
 
+  /// These are for animating the opacity of the arrows.
+  late Animation<double> arrowOpacity;
+
   /// These are the animating values, which is initialized after the first frame.
   late List<Animation<double>> opacities;
   late List<Animation<Offset>> translations;
@@ -501,22 +647,23 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   void resetAnimation() {
     animationController.reset();
 
+    arrowOpacity = const AlwaysStoppedAnimation<double>(1.0);
     if (hasLoadedOpacityTargets) {
-      opacities = <Animation<double>>[
+      opacities = [
         for (int i = 0; i < logicalCount; ++i) //
           AlwaysStoppedAnimation<double>(opacityTargets[i]),
       ];
     }
 
     if (hasLoadedTranslationTargets) {
-      translations = <Animation<Offset>>[
+      translations = [
         for (int i = 0; i < logicalCount; ++i) //
           const AlwaysStoppedAnimation<Offset>(Offset.zero),
       ];
     }
 
     if (hasLoadedScaleTargets) {
-      scales = <Animation<double>>[
+      scales = [
         for (int i = 0; i < logicalCount; ++i) //
           AlwaysStoppedAnimation<double>(scaleTargets[i]),
       ];
@@ -524,15 +671,16 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   }
 
   /// Weird stuff going on here. Just use it in Desmos.
-  double opacityInterpolation(int x) {
-    return exp(-1 * pow(x - logicalCount ~/ 2, 2)).clamp(0.0, 1.0);
-  }
+  static final interpolations = (
+    opacity: (int x) => exp(-1 * pow(x, 2)).clamp(0.0, 1.0),
+    scale: (int x) => cos((pi / logicalCount) * x),
+  );
 
   void computeOpacityTargets() {
     if (!hasLoadedOpacityTargets) {
       opacityTargets = [
-        for (int i = 0; i < logicalCount; ++i) //
-          opacityInterpolation(i),
+        for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
+          interpolations.opacity(i),
       ];
     }
     hasLoadedOpacityTargets = true;
@@ -545,7 +693,6 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
           if (globalKeys[i].currentContext?.findRenderObject() case RenderBox renderBox)
             renderBox.localToGlobal(Offset.zero),
       ];
-      print(translationTargets);
     }
     hasLoadedTranslationTargets = true;
   }
@@ -553,31 +700,37 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   void computeScaleTargets() {
     if (!hasLoadedScaleTargets) {
       scaleTargets = [
-        for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
-          if (i == 0) 1.0 else 0.75,
+        for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
+          interpolations.scale(i),
       ];
     }
     hasLoadedScaleTargets = true;
   }
 
   Future<void> highlightPreviousItem() async {
-    if (isAnimating) {
-      return;
-    }
+    arrowOpacity = CurvedAnimation(
+      curve: Curves.easeInOut,
+      parent: animationController,
+    ).drive(
+      TweenSequence<double>([
+        TweenSequenceItem<double>(tween: ConstantTween(0.5), weight: 0.99),
+        TweenSequenceItem<double>(tween: ConstantTween(1.0), weight: 0.01),
+      ]),
+    );
 
-    opacities = <Animation<double>>[
+    opacities = [
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: opacityTargets.cyclicAt(i), end: opacityTargets.cyclicAt(i + 1)),
         ),
     ];
-    translations = <Animation<Offset>>[
+    translations = [
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<Offset>(begin: Offset.zero, end: translationTargets.cyclicAt(i + 1) - translationTargets.cyclicAt(i)),
         ),
     ];
-    scales = <Animation<double>>[
+    scales = [
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: scaleTargets.cyclicAt(i), end: scaleTargets.cyclicAt(i + 1)),
@@ -586,7 +739,6 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
 
     isAnimating = true;
     await animationController.forward(from: 0.0);
-
     isAnimating = false;
 
     setState(() {
@@ -596,23 +748,29 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   }
 
   Future<void> highlightNextItem() async {
-    if (isAnimating) {
-      return;
-    }
+    arrowOpacity = CurvedAnimation(
+      curve: Curves.easeInOut,
+      parent: animationController,
+    ).drive(
+      TweenSequence<double>([
+        TweenSequenceItem<double>(tween: ConstantTween(0.5), weight: 0.99),
+        TweenSequenceItem<double>(tween: ConstantTween(1.0), weight: 0.01),
+      ]),
+    );
 
-    opacities = <Animation<double>>[
+    opacities = [
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: opacityTargets.cyclicAt(i), end: opacityTargets.cyclicAt(i - 1)),
         ),
     ];
-    translations = <Animation<Offset>>[
+    translations = [
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<Offset>(begin: Offset.zero, end: translationTargets.cyclicAt(i - 1) - translationTargets.cyclicAt(i)),
         ),
     ];
-    scales = <Animation<double>>[
+    scales = [
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: scaleTargets.cyclicAt(i), end: scaleTargets.cyclicAt(i - 1)),
@@ -650,6 +808,8 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
       }
     });
 
+    arrowOpacity = const AlwaysStoppedAnimation<double>(1.0);
+
     /// Call computeOffsets after rendering the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       computeOpacityTargets();
@@ -663,75 +823,117 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
 
   @override
   Widget build(BuildContext context) {
-    return UnconstrainedBox(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Row(
-        children: [
-          for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
-            if (widget.projects[(i + activeIndex) % projectCount] case (:String iconPath, :String name)) ...[
-              if (i == 0) ...[
-                const SizedBox(width: 8.0),
-                GestureDetector(
-                  onTap: highlightPreviousItem,
-                  child: const MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Icon(Icons.arrow_back_ios),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-              ] else ...[
-                const SizedBox(width: 8.0),
-              ],
-              AnimatedBuilder(
-                animation: animationController,
-                builder: (BuildContext context, Widget? child) {
-                  int v = i + renderCount ~/ 2 + 1;
+    ThemeData theme = Theme.of(context);
 
-                  double opacity = hasLoadedOpacityTargets ? opacities[v].value : opacityInterpolation(v);
-                  Offset translation = hasLoadedTranslationTargets ? translations[v].value : Offset.zero;
-                  double scale = hasLoadedScaleTargets ? scales[v].value : (i == 0 ? 1.0 : 0.75);
-
-                  return KeyedSubtree(
-                    key: globalKeys[v],
-                    child: Opacity(
-                      opacity: opacity,
-
-                      /// The hierarchy of transformations is as follows:
-                      ///  1. Scale
-                      ///  2. Translate
-                      ///
-                      /// This is important as the scale transformation will affect the offset of the child.
-                      child: Transform(
-                        transform: Matrix4.identity()
-                          ..translate(translation.dx, translation.dy)
-                          ..scale(scale),
-                        alignment: Alignment.center,
-                        child: child,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return UnconstrainedBox(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: Row(
+            children: [
+              for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
+                if (widget.projects.cyclicAt(i + activeIndex)
+                    case (
+                      :String iconPath,
+                      :String name,
+                      :String description,
+                    )) ...[
+                  if (i == 0)
+                    AnimatedBuilder(
+                      animation: animationController,
+                      builder: (BuildContext context, Widget? child) {
+                        return Opacity(
+                          opacity: arrowOpacity.value,
+                          child: child,
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: GestureDetector(
+                          onTap: () => widget.pulsar.move(_Movement.previous),
+                          child: const MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Icon(Icons.arrow_back_ios),
+                          ),
+                        ),
                       ),
                     ),
-                  );
-                },
-                child: _ProjectTile(
-                  icon: Image(image: AssetImage(iconPath), fit: BoxFit.cover),
-                  title: FittedBox(fit: BoxFit.scaleDown, child: Text(name)),
-                ),
-              ),
-              if (i == 0) ...[
-                const SizedBox(width: 8.0),
-                GestureDetector(
-                  onTap: highlightNextItem,
-                  child: const MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Icon(Icons.arrow_forward_ios),
+                  AnimatedBuilder(
+                    animation: animationController,
+                    builder: (BuildContext context, Widget? child) {
+                      int v = i + renderCount ~/ 2 + 1;
+
+                      double opacity = hasLoadedOpacityTargets ? opacities[v].value : interpolations.opacity(v);
+                      Offset translation = hasLoadedTranslationTargets ? translations[v].value : Offset.zero;
+                      double scale = hasLoadedScaleTargets ? scales[v].value : interpolations.scale(v);
+
+                      return KeyedSubtree(
+                        key: globalKeys[v],
+                        child: Opacity(
+                          opacity: opacity,
+
+                          /// The hierarchy of transformations is as follows:
+                          ///  1. Scale
+                          ///  2. Translate
+                          ///
+                          /// This is important as the scale transformation will affect the offset of the child.
+                          child: Transform(
+                            transform: Matrix4.identity()
+                              ..translate(translation.dx, translation.dy)
+                              ..scale(scale),
+                            alignment: Alignment.center,
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: constraints.constrainWidth() * 0.65),
+                      child: _ProjectTile(
+                        icon: Image(image: AssetImage(iconPath), fit: BoxFit.cover),
+                        title: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            name,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                        description: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            description,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ),
+                        isSelected: i == 0,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-              ] else ...[
-                const SizedBox(width: 8.0),
-              ],
+                  if (i == 0)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: AnimatedBuilder(
+                        animation: animationController,
+                        builder: (BuildContext context, Widget? child) {
+                          return Opacity(
+                            opacity: arrowOpacity.value,
+                            child: child,
+                          );
+                        },
+                        child: GestureDetector(
+                          onTap: () => widget.pulsar.move(_Movement.next),
+                          child: const MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Icon(Icons.arrow_forward_ios),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
             ],
-        ],
-      ),
+          ),
+        );
+      },
     );
   }
 }
