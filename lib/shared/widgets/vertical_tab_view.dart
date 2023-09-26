@@ -23,6 +23,10 @@ class VerticalTabBarView extends StatefulWidget {
 }
 
 class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTickerProviderStateMixin {
+  // ignore: prefer_const_declarations
+  static final Cubic animationCurve = Curves.easeOutQuart;
+  static final Duration animationDuration = 380.ms;
+
   late final List<GlobalKey> globalKeys;
 
   late bool isDragging;
@@ -31,7 +35,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
   Future<void> scrollTo(int index) async {
     if (globalKeys[index].currentContext case BuildContext context) {
       isDragging = true;
-      await Scrollable.ensureVisible(context, duration: 250.ms, curve: Curves.easeOut);
+      await Scrollable.ensureVisible(context, duration: animationDuration, curve: animationCurve);
       isDragging = false;
     }
   }
@@ -59,7 +63,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           isDragging = false;
         }
       });
-      widget.scrollController.addListener(() {
+      widget.scrollController.addListener(() async {
         if (isDragging) {
           return;
         }
@@ -80,6 +84,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
         if (lowest case (int index, _) when tabController.index != index) {
           isClicking = true;
           tabController.animateTo(index);
+          await Future<void>.delayed(animationDuration);
           isClicking = false;
         }
       });
@@ -89,9 +94,10 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
   @override
   Widget build(BuildContext context) {
     return MouseScroll(
-      duration: 150.ms,
-      curve: Curves.easeOut,
       controller: widget.scrollController,
+      scrollSpeed: 1.2,
+      duration: animationDuration,
+      animationCurve: animationCurve,
       builder: (BuildContext context, ScrollController scrollController, ScrollPhysics physics) {
         return SingleChildScrollView(
           controller: scrollController,

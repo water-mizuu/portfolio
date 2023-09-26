@@ -1,6 +1,6 @@
-// ignore_for_file: unnecessary_breaks
+// ignore_for_file: unnecessary_breaks, discarded_futures
 
-import "dart:async";
+import "dart:math" as math;
 
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
@@ -10,108 +10,153 @@ class MouseScroll extends StatelessWidget {
   const MouseScroll({
     required this.builder,
     required this.controller,
-    this.mobilePhysics = kMobilePhysics,
-    this.duration = const Duration(milliseconds: 100),
-    this.curve = Curves.linear,
     super.key,
+    this.mobilePhysics = kMobilePhysics,
+    this.duration = const Duration(milliseconds: 380),
+    this.scrollSpeed = 1.0,
+    this.animationCurve = Curves.easeOutQuart,
   });
-
-  final Widget Function(
-    BuildContext context,
-    ScrollController controller,
-    ScrollPhysics physics,
-  ) builder;
+  final ScrollController controller;
   final ScrollPhysics mobilePhysics;
   final Duration duration;
-  final Curve curve;
-  final ScrollController controller;
+  final double scrollSpeed;
+  final Curve animationCurve;
+  final Widget Function(BuildContext, ScrollController, ScrollPhysics) builder;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return ChangeNotifierProvider<ScrollState>(
-          create: (BuildContext context) => ScrollState(mobilePhysics, duration, curve, controller),
-          builder: (BuildContext context, _) {
-            ScrollState scrollState = context.read<ScrollState>();
+    return ChangeNotifierProvider<ScrollState>(
+      create: (context) => ScrollState(mobilePhysics, controller, duration),
+      builder: (context, _) {
+        var scrollState = context.read<ScrollState>();
+        var controller = scrollState.controller;
+        var (physics, _) = context.select((ScrollState s) => (s.activePhysics, s.updateState));
 
-            return NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification notification) {
-                if (notification case ScrollEndNotification _) {
-                  scrollState.futurePosition = controller.offset;
-                }
-                return false;
-              },
-              child: Listener(
-                onPointerSignal: scrollState.handleDesktopScroll,
-                onPointerDown: scrollState.handleTouchScroll,
-                child: builder(context, controller, context.select((ScrollState s) => s.physics)),
-              ),
-            );
-          },
+        if (scrollState case ScrollState(:void Function() handlePipelinedScroll)) {
+          handlePipelinedScroll();
+        }
+        return Listener(
+          onPointerSignal: (signalEvent) => scrollState.handleDesktopScroll(signalEvent, scrollSpeed, animationCurve),
+          onPointerDown: scrollState.handleTouchScroll,
+          child: builder(context, controller, physics),
         );
       },
     );
   }
 }
 
-const BouncingScrollPhysics kMobilePhysics = BouncingScrollPhysics();
-const NeverScrollableScrollPhysics kDesktopPhysics = NeverScrollableScrollPhysics();
+const kMobilePhysics = BouncingScrollPhysics();
+const kDesktopPhysics = NeverScrollableScrollPhysics();
 
 class ScrollState with ChangeNotifier {
-  ScrollState(
-    this.mobilePhysics,
-    this.duration,
-    this.curve,
-    this.controller,
-  );
-
-  final ScrollController controller;
-  ScrollPhysics physics = kDesktopPhysics;
-  double futurePosition = 0;
+  ScrollState(this.mobilePhysics, this.controller, this.duration);
 
   final ScrollPhysics mobilePhysics;
+  final ScrollController controller;
   final Duration duration;
-  final Curve curve;
 
-  Future<void> handleDesktopScroll(PointerSignalEvent event) async {
+  late ScrollPhysics activePhysics = mobilePhysics;
+  double futurePosition = 0;
+  bool updateState = false;
+
+  bool prevDeltaPositive = false;
+  double? lastLock;
+
+  Future<void>? _animationEnd;
+
+  void Function()? handlePipelinedScroll;
+
+  static double calcMaxDelta(ScrollController controller, double delta) {
+    double pixels = controller.position.pixels;
+
+    return delta > 0
+        ? math.min(pixels + delta, controller.position.maxScrollExtent) - pixels
+        : math.max(pixels + delta, controller.position.minScrollExtent) - pixels;
+  }
+
+  void handleDesktopScroll(
+    PointerSignalEvent event,
+    double scrollSpeed,
+    Curve animationCurve, {
+    bool shouldReadLastDirection = true,
+  }) {
     // Ensure desktop physics is being used.
-    if (physics == kMobilePhysics) {
-      physics = kDesktopPhysics;
-      notifyListeners();
-      return;
-    }
-
-    if (event is PointerScrollEvent) {
-      // Return if limit is reached in either direction.
-      if (event.scrollDelta.dy case double dy when controller.position.atEdge) {
-        // Return if bounds exceeded.
-        switch (controller.offset) {
-          case <= 0:
-            if (dy < 0) {
-              return;
-            }
-          case _:
-            if (dy > 0) {
-              return;
-            }
-        }
+    if (activePhysics == kMobilePhysics || lastLock != null) {
+      if (lastLock != null) {
+        updateState = !updateState;
       }
-      futurePosition += event.scrollDelta.dy;
+      if (event case PointerScrollEvent()) {
+        double pixels = controller.position.pixels;
+        if ((pixels <= controller.position.minScrollExtent && event.scrollDelta.dy < 0) ||
+            (pixels >= controller.position.maxScrollExtent && event.scrollDelta.dy > 0)) {
+          return;
+        } else {
+          activePhysics = kDesktopPhysics;
+        }
+        double calcDelta = calcMaxDelta(controller, event.scrollDelta.dy);
+        bool isOutOfBounds = pixels < controller.position.minScrollExtent || //
+            pixels > controller.position.maxScrollExtent;
 
-      await controller.animateTo(
+        if (!isOutOfBounds) {
+          controller.jumpTo(lastLock ?? (pixels - calcDelta));
+        }
+        double deltaDelta = calcDelta - event.scrollDelta.dy;
+        handlePipelinedScroll = () {
+          handlePipelinedScroll = null;
+          double currentPos = controller.position.pixels;
+          double currentDelta = event.scrollDelta.dy;
+          bool shouldLock = lastLock != null
+              ? (lastLock == currentPos)
+              : (pixels != currentPos + deltaDelta &&
+                  (currentPos != controller.position.maxScrollExtent || currentDelta < 0) &&
+                  (currentPos != controller.position.minScrollExtent || currentDelta > 0));
+          if (!isOutOfBounds && shouldLock) {
+            controller.jumpTo(pixels);
+            lastLock = pixels;
+            controller.position.moveTo(pixels).whenComplete(() {
+              if (activePhysics == kDesktopPhysics) {
+                activePhysics = kMobilePhysics;
+                notifyListeners();
+              }
+            });
+            return;
+          } else {
+            if (lastLock != null || isOutOfBounds) {
+              controller.jumpTo(lastLock != null ? pixels : (currentPos - calcMaxDelta(controller, currentDelta)));
+            }
+            lastLock = null;
+            handleDesktopScroll(event, scrollSpeed, animationCurve, shouldReadLastDirection: false);
+          }
+        };
+        notifyListeners();
+      }
+    } else if (event case PointerScrollEvent()) {
+      bool currentDeltaPositive = event.scrollDelta.dy > 0;
+      if (shouldReadLastDirection && currentDeltaPositive == prevDeltaPositive) {
+        futurePosition += event.scrollDelta.dy * scrollSpeed;
+      } else {
+        futurePosition = controller.position.pixels + event.scrollDelta.dy * scrollSpeed;
+      }
+      prevDeltaPositive = event.scrollDelta.dy > 0;
+
+      Future<void> animationEnd = _animationEnd = controller.animateTo(
         futurePosition,
         duration: duration,
-        curve: curve,
+        curve: animationCurve,
       );
+      animationEnd.whenComplete(() {
+        if (animationEnd == _animationEnd && activePhysics == kDesktopPhysics) {
+          activePhysics = mobilePhysics;
+          notifyListeners();
+        }
+      });
     }
   }
 
   void handleTouchScroll(PointerDownEvent event) {
-    if (physics == kDesktopPhysics) {
-      physics = mobilePhysics;
+    if (activePhysics == kDesktopPhysics) {
+      activePhysics = mobilePhysics;
       notifyListeners();
-      return;
     }
   }
 }
