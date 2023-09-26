@@ -317,7 +317,7 @@ base class ProjectsSection extends StatefulWidget {
 }
 
 class _ProjectsSectionState extends State<ProjectsSection> {
-  static final List<_Project> _projects = [
+  static const List<_Project> _projects = [
     (
       iconPath: "assets/images/2048.png",
       name: "2048",
@@ -481,26 +481,26 @@ class _ProjectTileState extends State<_ProjectTile> {
 
         /// If it is active, then we want the ui to be like:
         ///
-        /// + - - - - - - - - - - - - - - - - - - - - - - +
-        /// | + - - - - - + | Non-Scrollable View         |
+        /// +---------------+-----------------------------+
+        /// | +---------- + | Non-Scrollable View         |
         /// | |           | |                             |
         /// | |           | |                             |
         /// | |           | |                             |
-        /// | + - - - - - + |                             |
+        /// | +---------- + |                             |
         /// |     TITLE     |                             |
         /// |  Description  |                         [x] |
-        /// + - - - - - - - - - + - - - - - - - - - - - - +
+        /// +---------------+-----------------------------+
         ///
         /// Otherwise, we want the ui to be like:
         ///
-        /// + - - - - - - - +
-        /// | + - - - - - + |
+        /// +---------------+
+        /// | +---------- + |
         /// | |           | |
         /// | |           | |
         /// | |           | |
-        /// | + - - - - - + |
+        /// | +---------- + |
         /// |     TITLE     |
-        /// + - - - - - - - +
+        /// +---------------+
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: textColor),
