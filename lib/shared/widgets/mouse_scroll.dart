@@ -26,17 +26,18 @@ class MouseScroll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ScrollState>(
-      create: (context) => ScrollState(mobilePhysics, controller, duration),
-      builder: (context, _) {
-        var scrollState = context.read<ScrollState>();
-        var controller = scrollState.controller;
-        var (physics, _) = context.select((ScrollState s) => (s.activePhysics, s.updateState));
+      create: (BuildContext context) => ScrollState(mobilePhysics, controller, duration),
+      builder: (BuildContext context, _) {
+        ScrollState scrollState = context.read<ScrollState>();
+        ScrollController controller = scrollState.controller;
+        var (ScrollPhysics physics, _) = context.select((ScrollState s) => (s.activePhysics, s.updateState));
 
         if (scrollState case ScrollState(:void Function() handlePipelinedScroll)) {
           handlePipelinedScroll();
         }
         return Listener(
-          onPointerSignal: (signalEvent) => scrollState.handleDesktopScroll(signalEvent, scrollSpeed, animationCurve),
+          onPointerSignal: (PointerSignalEvent signalEvent) =>
+              scrollState.handleDesktopScroll(signalEvent, scrollSpeed, animationCurve),
           onPointerDown: scrollState.handleTouchScroll,
           child: builder(context, controller, physics),
         );
@@ -45,8 +46,8 @@ class MouseScroll extends StatelessWidget {
   }
 }
 
-const kMobilePhysics = BouncingScrollPhysics();
-const kDesktopPhysics = NeverScrollableScrollPhysics();
+const BouncingScrollPhysics kMobilePhysics = BouncingScrollPhysics();
+const NeverScrollableScrollPhysics kDesktopPhysics = NeverScrollableScrollPhysics();
 
 class ScrollState with ChangeNotifier {
   ScrollState(this.mobilePhysics, this.controller, this.duration);

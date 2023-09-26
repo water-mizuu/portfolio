@@ -53,7 +53,7 @@ class _AboutMeSectionState extends State<AboutMeSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: [
+            children: <Widget>[
               Text("About Me", style: theme.textTheme.titleLarge),
               const SizedBox(height: 64.0),
               SizedBox(
@@ -61,13 +61,13 @@ class _AboutMeSectionState extends State<AboutMeSection> {
                 child: IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       /// Element 0: Image.
                       Expanded(
                         child: DecoratedBox(
                           decoration: const BoxDecoration(color: Colors.grey),
                           child: Row(
-                            children: [
+                            children: <Widget>[
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Container(
@@ -151,7 +151,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: [
+            children: <Widget>[
               Text(
                 "Contact Info",
                 style: theme.textTheme.titleLarge,
@@ -160,9 +160,9 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
               SizedBox(
                 width: MediaQuery.sizeOf(context).width / 3,
                 child: Table(
-                  children: [
+                  children: <TableRow>[
                     TableRow(
-                      children: [
+                      children: <Widget>[
                         Text(
                           "Email: ",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -175,7 +175,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: [
+                      children: <Widget>[
                         Text(
                           "Mobile Number: ",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -188,7 +188,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: [
+                      children: <Widget>[
                         Text("", style: theme.textTheme.bodyMedium),
                         Text("", style: theme.textTheme.bodyMedium),
                       ],
@@ -196,7 +196,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
 
                     ///
                     TableRow(
-                      children: [
+                      children: <Widget>[
                         Text(
                           "Facebook:",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -209,7 +209,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: [
+                      children: <Widget>[
                         Text(
                           "GitHub:",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -222,7 +222,7 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
                       ],
                     ),
                     TableRow(
-                      children: [
+                      children: <Widget>[
                         Text(
                           "LinkedIn:",
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -293,7 +293,7 @@ class _IntroductionSectionState extends State<IntroductionSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: [
+            children: <Widget>[
               Text("Michael.", style: theme.textTheme.titleLarge),
               const SizedBox(height: 8.0),
               Text("Software Engineer & Programmer", style: theme.textTheme.titleSmall),
@@ -327,7 +327,7 @@ base class ProjectsSection extends StatefulWidget {
 }
 
 class _ProjectsSectionState extends State<ProjectsSection> {
-  static const List<_Project> _projects = [
+  static const List<_Project> _projects = <_Project>[
     (
       iconPath: "assets/images/2048.png",
       name: "2048",
@@ -411,7 +411,7 @@ class _ProjectsSectionState extends State<ProjectsSection> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 96, 0, 32),
           child: Column(
-            children: [
+            children: <Widget>[
               Text("Projects", style: theme.textTheme.titleLarge),
               const SizedBox(height: 64.0),
               _ProjectDisplay(projects: _projects, pulsar: pulsar),
@@ -518,14 +518,14 @@ class _ProjectTileState extends State<_ProjectTile> {
           ),
           padding: const EdgeInsets.all(16.0),
           child: Stack(
-            children: [
-              if (isActive) ...[
+            children: <Widget>[
+              if (isActive) ...<Widget>[
                 IntrinsicHeight(
                   child: Row(
-                    children: [
+                    children: <Widget>[
                       // The image & title & description
                       Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
                               border: Border.all(color: const Color(0x8FFFFFFF)),
@@ -546,7 +546,7 @@ class _ProjectTileState extends State<_ProjectTile> {
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: <Widget>[
                             Text("Hello world!", style: theme.textTheme.titleMedium),
                             const SizedBox(height: 16.0),
                             Text("lorem ipsum dolor sit", style: theme.textTheme.bodyMedium),
@@ -556,9 +556,9 @@ class _ProjectTileState extends State<_ProjectTile> {
                     ],
                   ),
                 ),
-              ] else ...[
+              ] else ...<Widget>[
                 Column(
-                  children: [
+                  children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: const Color(0x8FFFFFFF)),
@@ -587,7 +587,7 @@ class _ProjectTileState extends State<_ProjectTile> {
         ),
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          children: [
+          children: <Widget>[
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: const Color(0x8FFFFFFF)),
@@ -659,21 +659,21 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
 
     arrowOpacity = const AlwaysStoppedAnimation<double>(1.0);
     if (hasLoadedOpacityTargets) {
-      opacities = [
+      opacities = <Animation<double>>[
         for (int i = 0; i < logicalCount; ++i) //
           AlwaysStoppedAnimation<double>(opacityTargets[i]),
       ];
     }
 
     if (hasLoadedTranslationTargets) {
-      translations = [
+      translations = <Animation<Offset>>[
         for (int i = 0; i < logicalCount; ++i) //
           const AlwaysStoppedAnimation<Offset>(Offset.zero),
       ];
     }
 
     if (hasLoadedScaleTargets) {
-      scales = [
+      scales = <Animation<double>>[
         for (int i = 0; i < logicalCount; ++i) //
           AlwaysStoppedAnimation<double>(scaleTargets[i]),
       ];
@@ -681,7 +681,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   }
 
   /// Weird stuff going on here. Just use it in Desmos.
-  static final interpolations = (
+  static final ({double Function(int x) opacity, double Function(int x) scale}) interpolations = (
     opacity: (int x) => exp(-1 * pow(x, 2)).clamp(0.0, 1.0),
     scale: (int x) => cos((pi / logicalCount) * x),
   );
@@ -692,7 +692,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     }
 
     hasLoadedOpacityTargets = true;
-    opacityTargets = [
+    opacityTargets = <double>[
       for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
         interpolations.opacity(i),
     ];
@@ -704,7 +704,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     }
 
     hasLoadedTranslationTargets = true;
-    translationTargets = [
+    translationTargets = <Offset>[
       for (int i = 0; i < logicalCount; ++i)
         if (globalKeys[i].currentContext?.findRenderObject() case RenderBox renderBox)
           renderBox.localToGlobal(Offset.zero),
@@ -717,7 +717,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     }
 
     hasLoadedScaleTargets = true;
-    scaleTargets = [
+    scaleTargets = <double>[
       for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
         interpolations.scale(i),
     ];
@@ -728,25 +728,25 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
       curve: Curves.easeInOut,
       parent: animationController,
     ).drive(
-      TweenSequence<double>([
-        TweenSequenceItem<double>(tween: ConstantTween(0.5), weight: 0.99),
-        TweenSequenceItem<double>(tween: ConstantTween(1.0), weight: 0.01),
+      TweenSequence<double>(<TweenSequenceItem<double>>[
+        TweenSequenceItem<double>(tween: ConstantTween<double>(0.5), weight: 0.99),
+        TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 0.01),
       ]),
     );
 
-    opacities = [
+    opacities = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: opacityTargets.cyclicAt(i), end: opacityTargets.cyclicAt(i + 1)),
         ),
     ];
-    translations = [
+    translations = <Animation<Offset>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<Offset>(begin: Offset.zero, end: translationTargets.cyclicAt(i + 1) - translationTargets.cyclicAt(i)),
         ),
     ];
-    scales = [
+    scales = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: scaleTargets.cyclicAt(i), end: scaleTargets.cyclicAt(i + 1)),
@@ -768,25 +768,25 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
       curve: Curves.easeInOut,
       parent: animationController,
     ).drive(
-      TweenSequence<double>([
-        TweenSequenceItem<double>(tween: ConstantTween(0.5), weight: 0.99),
-        TweenSequenceItem<double>(tween: ConstantTween(1.0), weight: 0.01),
+      TweenSequence<double>(<TweenSequenceItem<double>>[
+        TweenSequenceItem<double>(tween: ConstantTween<double>(0.5), weight: 0.99),
+        TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 0.01),
       ]),
     );
 
-    opacities = [
+    opacities = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: opacityTargets.cyclicAt(i), end: opacityTargets.cyclicAt(i - 1)),
         ),
     ];
-    translations = [
+    translations = <Animation<Offset>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<Offset>(begin: Offset.zero, end: translationTargets.cyclicAt(i - 1) - translationTargets.cyclicAt(i)),
         ),
     ];
-    scales = [
+    scales = <Animation<double>>[
       for (int i = 0; i < logicalCount; ++i)
         animationController.drive(
           Tween<double>(begin: scaleTargets.cyclicAt(i), end: scaleTargets.cyclicAt(i - 1)),
@@ -807,7 +807,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   void initState() {
     super.initState();
 
-    globalKeys = [for (int i = 0; i < logicalCount; ++i) GlobalKey()];
+    globalKeys = <GlobalKey<State<StatefulWidget>>>[for (int i = 0; i < logicalCount; ++i) GlobalKey()];
     animationController = AnimationController(vsync: this, duration: 250.ms);
 
     isAnimating = false;
@@ -846,14 +846,14 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
         return UnconstrainedBox(
           clipBehavior: Clip.hardEdge,
           child: Row(
-            children: [
+            children: <Widget>[
               for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
                 if (widget.projects.cyclicAt(i + activeIndex)
                     case (
                       :String iconPath,
                       :String name,
                       :String description,
-                    )) ...[
+                    )) ...<Widget>[
                   if (i == 0)
                     AnimatedBuilder(
                       animation: animationController,

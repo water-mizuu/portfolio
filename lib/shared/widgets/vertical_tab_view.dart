@@ -47,7 +47,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
     isDragging = false;
     isClicking = false;
 
-    globalKeys = [
+    globalKeys = <GlobalKey>[
       for (int i = 0; i < widget.children.length; ++i) GlobalKey(),
     ];
 
@@ -81,6 +81,9 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           }
         }
 
+        if (tabController.indexIsChanging) {
+          return;
+        }
         if (lowest case (int index, _) when tabController.index != index) {
           isClicking = true;
           tabController.animateTo(index);
@@ -104,7 +107,7 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           physics: physics,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+            children: <Widget>[
               for (int i = 0; i < widget.children.length; ++i)
                 KeyedSubtree(key: globalKeys[i], child: widget.children[i]),
               if (widget.footer case Widget footer) footer,

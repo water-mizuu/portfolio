@@ -64,7 +64,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  static const List<Section> sections = [
+  static const List<Section> sections = <Section>[
     (name: "Introduction", body: IntroductionSection(index: 0)),
     (name: "About Me", body: AboutMeSection(index: 1)),
     (name: "Projects", body: ProjectsSection(index: 2)),
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         backgroundColor: backgroundColor,
         scrolledUnderElevation: 0.0,
         title: Row(
-          children: [
+          children: <Widget>[
             const Spacer(),
             TabBar(
               controller: tabController,
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
 
               /// React on tap.
-              tabs: [
+              tabs: <Widget>[
                 for (var (:String name, body: _) in sections) //
                   Tab(icon: Text(name)),
               ],
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       backgroundColor: backgroundColor,
       body: Stack(
-        children: [
+        children: <Widget>[
           /// Body
           ChangeNotifierProvider<TabController>.value(
             value: tabController,
@@ -147,17 +147,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               scrollController: scrollController,
               tabController: tabController,
               footer: const Column(
-                children: [
+                children: <Widget>[
                   SizedBox(height: 384.0 - 64.0 - 16.0 - 4.0),
                   Column(
-                    children: [
+                    children: <Widget>[
                       Text("Created with Flutter and Dart."),
                     ],
                   ),
                   SizedBox(height: 32.0),
                 ],
               ),
-              children: [
+              children: <Widget>[
                 for (var (name: _, :Widget body) in sections) body,
               ],
             ),
