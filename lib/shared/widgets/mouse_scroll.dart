@@ -69,7 +69,7 @@ class ScrollState with ChangeNotifier {
   static double calcMaxDelta(ScrollController controller, double delta) {
     double pixels = controller.position.pixels;
 
-    return delta > 0
+    return delta.sign > 0
         ? math.min(pixels + delta, controller.position.maxScrollExtent) - pixels
         : math.max(pixels + delta, controller.position.minScrollExtent) - pixels;
   }
@@ -87,27 +87,30 @@ class ScrollState with ChangeNotifier {
       }
       if (event case PointerScrollEvent()) {
         double pixels = controller.position.pixels;
-        if ((pixels <= controller.position.minScrollExtent && event.scrollDelta.dy < 0) ||
-            (pixels >= controller.position.maxScrollExtent && event.scrollDelta.dy > 0)) {
+
+        /// If the scroll is at the top or bottom, don't allow the user to scroll further.
+        if (pixels <= controller.position.minScrollExtent && event.scrollDelta.dy < 0 ||
+            pixels >= controller.position.maxScrollExtent && event.scrollDelta.dy > 0) {
           return;
         } else {
           activePhysics = kDesktopPhysics;
         }
-        double calcDelta = calcMaxDelta(controller, event.scrollDelta.dy);
+
+        double computedDelta = calcMaxDelta(controller, event.scrollDelta.dy);
         bool isOutOfBounds = pixels < controller.position.minScrollExtent || //
             pixels > controller.position.maxScrollExtent;
 
         if (!isOutOfBounds) {
-          controller.jumpTo(lastLock ?? (pixels - calcDelta));
+          controller.jumpTo(lastLock ?? (pixels - computedDelta));
         }
-        double deltaDelta = calcDelta - event.scrollDelta.dy;
+        double deltaDifference = computedDelta - event.scrollDelta.dy;
         handlePipelinedScroll = () {
           handlePipelinedScroll = null;
           double currentPos = controller.position.pixels;
           double currentDelta = event.scrollDelta.dy;
           bool shouldLock = lastLock != null
               ? (lastLock == currentPos)
-              : (pixels != currentPos + deltaDelta &&
+              : (pixels != currentPos + deltaDifference &&
                   (currentPos != controller.position.maxScrollExtent || currentDelta < 0) &&
                   (currentPos != controller.position.minScrollExtent || currentDelta > 0));
           if (!isOutOfBounds && shouldLock) {

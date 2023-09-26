@@ -15,18 +15,14 @@ base class AboutMeSection extends StatefulWidget {
   State<AboutMeSection> createState() => _AboutMeSectionState();
 }
 
-class _AboutMeSectionState extends State<AboutMeSection> with TickerProviderStateMixin {
+class _AboutMeSectionState extends State<AboutMeSection> {
   late final FocusNode focusNode;
-
-  late double latestDelta;
 
   @override
   void initState() {
     super.initState();
 
     focusNode = FocusNode();
-
-    latestDelta = 0.0;
   }
 
   @override
@@ -125,6 +121,13 @@ class _ContactInfoSectionState extends State<ContactInfoSection> {
     super.initState();
 
     focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -259,6 +262,13 @@ class _IntroductionSectionState extends State<IntroductionSection> {
     super.initState();
 
     focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -677,34 +687,40 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
   );
 
   void computeOpacityTargets() {
-    if (!hasLoadedOpacityTargets) {
-      opacityTargets = [
-        for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
-          interpolations.opacity(i),
-      ];
+    if (hasLoadedOpacityTargets) {
+      return;
     }
+
     hasLoadedOpacityTargets = true;
+    opacityTargets = [
+      for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
+        interpolations.opacity(i),
+    ];
   }
 
   void computeTranslationTargets() {
-    if (!hasLoadedTranslationTargets) {
-      translationTargets = [
-        for (int i = 0; i < logicalCount; ++i)
-          if (globalKeys[i].currentContext?.findRenderObject() case RenderBox renderBox)
-            renderBox.localToGlobal(Offset.zero),
-      ];
+    if (hasLoadedTranslationTargets) {
+      return;
     }
+
     hasLoadedTranslationTargets = true;
+    translationTargets = [
+      for (int i = 0; i < logicalCount; ++i)
+        if (globalKeys[i].currentContext?.findRenderObject() case RenderBox renderBox)
+          renderBox.localToGlobal(Offset.zero),
+    ];
   }
 
   void computeScaleTargets() {
-    if (!hasLoadedScaleTargets) {
-      scaleTargets = [
-        for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
-          interpolations.scale(i),
-      ];
+    if (hasLoadedScaleTargets) {
+      return;
     }
+
     hasLoadedScaleTargets = true;
+    scaleTargets = [
+      for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i) //
+        interpolations.scale(i),
+    ];
   }
 
   Future<void> highlightPreviousItem() async {
@@ -828,7 +844,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return UnconstrainedBox(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
+          clipBehavior: Clip.hardEdge,
           child: Row(
             children: [
               for (int i = -logicalCount ~/ 2; i <= logicalCount ~/ 2; ++i)
@@ -914,12 +930,10 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
                       padding: const EdgeInsets.only(left: 8.0),
                       child: AnimatedBuilder(
                         animation: animationController,
-                        builder: (BuildContext context, Widget? child) {
-                          return Opacity(
-                            opacity: arrowOpacity.value,
-                            child: child,
-                          );
-                        },
+                        builder: (BuildContext context, Widget? child) => Opacity(
+                          opacity: arrowOpacity.value,
+                          child: child,
+                        ),
                         child: GestureDetector(
                           onTap: () => widget.pulsar.move(_Movement.next),
                           child: const MouseRegion(
