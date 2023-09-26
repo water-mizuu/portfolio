@@ -12,9 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_hooks: ^0.20.1
   provider: ^6.0.5
-  smooth_scroll_multiplatform: ^1.0.8
 
 dev_dependencies:
   flutter_lints: ^2.0.0
