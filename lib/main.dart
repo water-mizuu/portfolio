@@ -71,19 +71,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     (name: "Contact Info", body: ContactInfoSection(index: 3)),
   ];
 
+  /// The controller for the shear animation.
+  late final AnimationController shearController;
+
+  /// The controller for the tab bar.
   late final TabController tabController;
+
+  /// The controller for the scroll view.
   late final ScrollController scrollController;
+
+  double previousOffset = 0.0;
 
   @override
   void initState() {
     super.initState();
 
+    shearController = AnimationController.unbounded(vsync: this, duration: const Duration(milliseconds: 120));
     tabController = TabController(length: sections.length, vsync: this);
     scrollController = ScrollController();
   }
 
   @override
   void dispose() {
+    shearController.dispose();
     tabController.dispose();
     scrollController.dispose();
 
@@ -158,8 +168,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ),
               children: <Widget>[
-                for (var (name: _, :Widget body) in sections) body,
+                for (var (name: _, :Widget body) in sections)
+                  AnimatedBuilder(
+                    animation: shearController,
+                    builder: (BuildContext context, Widget? child) => Transform(
+                      transform: Matrix4.identity() //
+                        ..setEntry(1, 0, shearController.value / 200),
+                      alignment: Alignment.center,
+                      child: child,
+                    ),
+                    child: body,
+                  ),
               ],
+              wrapper: (BuildContext context, SingleChildScrollView child) {
+                return NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification notification) {
+                    switch (notification) {
+                      case ScrollUpdateNotification(:double scrollDelta):
+                        shearController.animateTo(scrollDelta);
+
+                      /// We animate the shear to reset when the user stops scrolling.
+                      case ScrollEndNotification():
+                        shearController.animateTo(0.0);
+                    }
+                    return false;
+                  },
+                  child: child,
+                );
+              },
             ),
           ),
         ],

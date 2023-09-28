@@ -57,14 +57,16 @@ class ScrollState with ChangeNotifier {
   final Duration duration;
 
   late ScrollPhysics activePhysics = mobilePhysics;
-  double futurePosition = 0;
+  double _futurePosition = 0;
   bool updateState = false;
 
-  bool prevDeltaPositive = false;
-  double? lastLock;
+  bool _previousDeltaIsPositive = false;
+  double? _lastLock;
 
   Future<void>? _animationEnd;
 
+  /// Scroll that is pipelined to be handled after the current render is finished.
+  /// This is used to ensure that the scroll is handled while transitioning from physics.
   void Function()? handlePipelinedScroll;
 
   static double calcMaxDelta(ScrollController controller, double delta) {
@@ -82,8 +84,8 @@ class ScrollState with ChangeNotifier {
     bool shouldReadLastDirection = true,
   }) {
     // Ensure desktop physics is being used.
-    if (activePhysics == kMobilePhysics || lastLock != null) {
-      if (lastLock != null) {
+    if (activePhysics == kMobilePhysics || _lastLock != null) {
+      if (_lastLock != null) {
         updateState = !updateState;
       }
       if (event case PointerScrollEvent()) {
@@ -102,21 +104,21 @@ class ScrollState with ChangeNotifier {
             pixels > controller.position.maxScrollExtent;
 
         if (!isOutOfBounds) {
-          controller.jumpTo(lastLock ?? (pixels - computedDelta));
+          controller.jumpTo(_lastLock ?? (pixels - computedDelta));
         }
         double deltaDifference = computedDelta - event.scrollDelta.dy;
         handlePipelinedScroll = () {
           handlePipelinedScroll = null;
           double currentPos = controller.position.pixels;
           double currentDelta = event.scrollDelta.dy;
-          bool shouldLock = lastLock != null
-              ? (lastLock == currentPos)
+          bool shouldLock = _lastLock != null
+              ? (_lastLock == currentPos)
               : (pixels != currentPos + deltaDifference &&
                   (currentPos != controller.position.maxScrollExtent || currentDelta < 0) &&
                   (currentPos != controller.position.minScrollExtent || currentDelta > 0));
           if (!isOutOfBounds && shouldLock) {
             controller.jumpTo(pixels);
-            lastLock = pixels;
+            _lastLock = pixels;
             controller.position.moveTo(pixels).whenComplete(() {
               if (activePhysics == kDesktopPhysics) {
                 activePhysics = kMobilePhysics;
@@ -125,10 +127,10 @@ class ScrollState with ChangeNotifier {
             });
             return;
           } else {
-            if (lastLock != null || isOutOfBounds) {
-              controller.jumpTo(lastLock != null ? pixels : (currentPos - calcMaxDelta(controller, currentDelta)));
+            if (_lastLock != null || isOutOfBounds) {
+              controller.jumpTo(_lastLock != null ? pixels : (currentPos - calcMaxDelta(controller, currentDelta)));
             }
-            lastLock = null;
+            _lastLock = null;
             handleDesktopScroll(event, scrollSpeed, animationCurve, shouldReadLastDirection: false);
           }
         };
@@ -136,15 +138,15 @@ class ScrollState with ChangeNotifier {
       }
     } else if (event case PointerScrollEvent()) {
       bool currentDeltaPositive = event.scrollDelta.dy > 0;
-      if (shouldReadLastDirection && currentDeltaPositive == prevDeltaPositive) {
-        futurePosition += event.scrollDelta.dy * scrollSpeed;
+      if (shouldReadLastDirection && currentDeltaPositive == _previousDeltaIsPositive) {
+        _futurePosition += event.scrollDelta.dy * scrollSpeed;
       } else {
-        futurePosition = controller.position.pixels + event.scrollDelta.dy * scrollSpeed;
+        _futurePosition = controller.position.pixels + event.scrollDelta.dy * scrollSpeed;
       }
-      prevDeltaPositive = event.scrollDelta.dy > 0;
+      _previousDeltaIsPositive = event.scrollDelta.dy > 0;
 
       Future<void> animationEnd = _animationEnd = controller.animateTo(
-        futurePosition,
+        _futurePosition,
         duration: duration,
         curve: animationCurve,
       );

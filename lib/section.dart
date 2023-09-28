@@ -897,7 +897,7 @@ class _ProjectDisplayState extends State<_ProjectDisplay> with SingleTickerProvi
                             transform: Matrix4.identity()
                               ..translate(translation.dx, translation.dy)
                               ..scale(scale),
-                            alignment: Alignment.center,
+                            alignment: Alignment.bottomCenter,
                             child: child,
                           ),
                         ),

@@ -9,14 +9,25 @@ class VerticalTabBarView extends StatefulWidget {
     required this.tabController,
     required this.scrollController,
     required this.children,
+    this.wrapper,
     this.footer,
     super.key,
   });
 
+  /// The [TabController] to use for the [VerticalTabBarView].
   final TabController tabController;
+
+  /// The [ScrollController] to use for the [VerticalTabBarView].
   final ScrollController scrollController;
+
+  /// The widgets to display in the [VerticalTabBarView].
   final List<Widget> children;
+
+  /// A widget that is displayed at the bottom of the [VerticalTabBarView].
   final Widget? footer;
+
+  /// A wrapper around the body of the [VerticalTabBarView].
+  final Widget Function(BuildContext context, SingleChildScrollView body)? wrapper;
 
   @override
   State<VerticalTabBarView> createState() => _VerticalTabBarViewState();
@@ -31,6 +42,35 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
 
   late bool isDragging;
   late bool isClicking;
+
+  void updateFocusedElement() {
+    if (isDragging) {
+      return;
+    }
+
+    TabController tabController = widget.tabController;
+    (int, double)? lowest;
+    for (var (int index, GlobalKey key) in globalKeys.indexed) {
+      if (key.currentContext?.findRenderObject() case RenderBox renderBox) {
+        double offset = renderBox.localToGlobal(Offset.zero).dy.abs();
+
+        switch (lowest) {
+          case null:
+          case (_, double lowestOffset) when offset < lowestOffset:
+            lowest = (index, offset);
+        }
+      }
+    }
+
+    if (lowest case (int index, _) when tabController.index != index) {
+      isClicking = true;
+      tabController.animateTo(index);
+
+      /// We wait for the animation to scroll duration so that the user a feedback loop
+      ///   won't occur.
+      unawaited(Future<void>.delayed(animationDuration).whenComplete(() => isClicking = false));
+    }
+  }
 
   Future<void> scrollTo(int index) async {
     if (globalKeys[index].currentContext case BuildContext context) {
@@ -63,34 +103,6 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
           isDragging = false;
         }
       });
-      widget.scrollController.addListener(() async {
-        if (isDragging) {
-          return;
-        }
-
-        (int, double)? lowest;
-        for (var (int index, GlobalKey key) in globalKeys.indexed) {
-          if (key.currentContext?.findRenderObject() case RenderBox renderBox) {
-            double offset = renderBox.localToGlobal(Offset.zero).dy.abs();
-
-            switch (lowest) {
-              case null:
-              case (_, double lowestOffset) when offset < lowestOffset:
-                lowest = (index, offset);
-            }
-          }
-        }
-
-        if (tabController.indexIsChanging) {
-          return;
-        }
-        if (lowest case (int index, _) when tabController.index != index) {
-          isClicking = true;
-          tabController.animateTo(index);
-          await Future<void>.delayed(animationDuration);
-          isClicking = false;
-        }
-      });
     }
   }
 
@@ -102,17 +114,33 @@ class _VerticalTabBarViewState extends State<VerticalTabBarView> with SingleTick
       duration: animationDuration,
       animationCurve: animationCurve,
       builder: (BuildContext context, ScrollController scrollController, ScrollPhysics physics) {
-        return SingleChildScrollView(
+        SingleChildScrollView child = SingleChildScrollView(
           controller: scrollController,
           physics: physics,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               for (int i = 0; i < widget.children.length; ++i)
-                KeyedSubtree(key: globalKeys[i], child: widget.children[i]),
+                KeyedSubtree(
+                  key: globalKeys[i],
+                  child: widget.children[i],
+                ),
               if (widget.footer case Widget footer) footer,
             ],
           ),
+        );
+
+        return NotificationListener<Notification>(
+          onNotification: (Notification notification) {
+            switch (notification) {
+              case ScrollUpdateNotification _:
+                updateFocusedElement();
+              case Notification _:
+                print(notification);
+            }
+            return false;
+          },
+          child: widget.wrapper?.call(context, child) ?? child,
         );
       },
     );
