@@ -1,6 +1,7 @@
+import type { ReactElement } from "react";
 import { EMAIL, SOCIALS } from "../config";
 
-export default function ContactSection(): JSX.Element {
+export default function ContactSection(): ReactElement {
   return (
     <section id="contact" className="contact card">
       <h2>Contact</h2>

@@ -1,4 +1,6 @@
-export default function AboutSection(): JSX.Element {
+import type { ReactElement } from "react";
+
+export default function AboutSection(): ReactElement {
   return (
     <section id="about" className="about card">
       <h2>About</h2>

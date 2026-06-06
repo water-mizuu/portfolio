@@ -5,10 +5,10 @@ import ContactSection from "./components/ContactSection";
 import HomeSection from "./components/HomeSection";
 import ProjectModal from "./components/ProjectModal";
 import ProjectsSection from "./components/ProjectsSection";
-import RepoNotesSection from "./components/RepoNotesSection";
+import { SideSection } from "./components/SideSection";
 import SkillsSection from "./components/SkillsSection";
 import { GITHUB_REPOS } from "./generated/github-data";
-import type { GitHubRepo, PortfolioNote, SectionId } from "./types";
+import type { GitHubRepo, SectionId } from "./types";
 
 export default function App(): ReactNode {
   const [repos] = useState<GitHubRepo[]>(GITHUB_REPOS);
@@ -17,9 +17,6 @@ export default function App(): ReactNode {
 
   const sectionRatiosRef = useRef<Map<SectionId, number>>(new Map());
   const activeSectionRef = useRef<SectionId>("home");
-  const portfolioNotes: PortfolioNote[] = repos.flatMap((repo) =>
-    repo.portfolioNote ? [{ repoName: repo.name, content: repo.portfolioNote }] : [],
-  );
 
   useEffect(() => {
     activeSectionRef.current = activeSection;
@@ -91,39 +88,16 @@ export default function App(): ReactNode {
 
   return (
     <div className="site-root">
-      <aside className="vbar" aria-hidden="false">
-        <nav className="vnav" aria-label="Primary">
-          <button
-            type="button"
-            className={activeSection === "home" ? "active" : ""}
-            onClick={(event) => handleNavClick(event, "home")}
-          >
-            Home
-          </button>
-          <button
-            type="button"
-            className={activeSection === "projects" ? "active" : ""}
-            onClick={(event) => handleNavClick(event, "projects")}
-          >
-            Projects
-          </button>
-          <button
-            type="button"
-            className={activeSection === "contact" ? "active" : ""}
-            onClick={(event) => handleNavClick(event, "contact")}
-          >
-            Contact
-          </button>
-        </nav>
-      </aside>
+      <SideSection activeSection={activeSection} handleNavClick={handleNavClick} />
 
       <main className="container">
         <HomeSection />
         <AboutSection />
         <ProjectsSection repos={repos} onOpen={(r) => setSelectedRepo(r)} />
-        <RepoNotesSection notes={portfolioNotes} />
 
-        {selectedRepo && <ProjectModal repo={selectedRepo} onClose={() => setSelectedRepo(null)} />}
+        {selectedRepo != null && (
+          <ProjectModal repo={selectedRepo} onClose={() => setSelectedRepo(null)} />
+        )}
 
         <SkillsSection />
         <ContactSection />

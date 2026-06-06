@@ -1,6 +1,7 @@
+import type { ReactElement } from "react";
 import { EMAIL, SITE } from "../config";
 
-export default function HomeSection(): JSX.Element {
+export default function HomeSection(): ReactElement {
   return (
     <section id="home" className="hero">
       <h1>{SITE.headline}</h1>

@@ -50,8 +50,6 @@ async function fetchAllRepos(owner) {
       { headers: githubHeaders() },
     );
 
-    console.log(githubHeaders());
-
     if (!response.ok) {
       throw new Error(`Failed to fetch repositories for ${owner}: ${response.status}`);
     }

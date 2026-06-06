@@ -1,4 +1,6 @@
-export default function SkillsSection(): JSX.Element {
+import { ReactElement } from "react";
+
+export default function SkillsSection(): ReactElement {
   return (
     <section id="skills" className="skills card">
       <h2>Skills</h2>

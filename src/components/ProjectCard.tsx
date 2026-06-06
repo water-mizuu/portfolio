@@ -1,11 +1,12 @@
+import type { ReactElement } from "react";
 import type { GitHubRepo } from "../types";
 
-interface ProjectCardProps {
+interface Props {
   repo: GitHubRepo;
   onOpen?: (repo: GitHubRepo) => void;
 }
 
-export default function ProjectCard({ repo, onOpen }: ProjectCardProps): JSX.Element {
+export default function ProjectCard({ repo, onOpen }: Props): ReactElement {
   return (
     <article className="card">
       <h3 className="card-title">

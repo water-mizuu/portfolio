@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import type { GitHubRepo } from "../types";
 import ProjectCard from "./ProjectCard";
 

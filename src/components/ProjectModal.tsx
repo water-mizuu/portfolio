@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import type { GitHubRepo } from "../types";
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   onClose(): void;
 }
 
-export default function ProjectModal({ repo, onClose }: Props) {
+export default function ProjectModal({ repo, onClose }: Props): ReactElement {
   const [visible, setVisible] = useState(false);
   const closingRef = useRef(false);
 
