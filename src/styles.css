@@ -1,0 +1,407 @@
+:root {
+  /* Personalized single dark hue (no accent) */
+  --bg: #251e1d; /* user-selected dark hue */
+  --card-bg: #251e1d;
+  --text: #e6eef2;
+  --muted: #9aa6ad;
+  --accent: #251e1d; /* no separate accent */
+  --link: rgba(230, 238, 242, 0.95);
+  --link-muted: rgba(230, 238, 242, 0.6);
+  --elev: rgba(255, 255, 255, 0.02);
+
+  --max-width: 900px;
+  --radius: 10px;
+}
+
+/* Alternative palettes (choose one, or override in CSS):
+- Slate + Orange: --bg: #0b0d10; --card-bg: #111316; --text: #eaeff0; --muted: #9aa6ad; --accent: #ff8a00;
+- Deep Blue + Purple: --bg: #030417; --card-bg: #0a0f1a; --text: #e8f0ff; --muted: #92a0c0; --accent: #7b61ff;
+- Charcoal + Green: --bg: #0b0b0b; --card-bg: #121212; --text: #e9f6ef; --muted: #88a192; --accent: #5af27c;
+*/
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  /* Reserve more space so the main body sits farther from the sidebar */
+  padding: 48px 20px 48px 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Vertical sidebar (left) — top bar rotated 90deg CCW concept */
+.vbar {
+  position: fixed;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  /* allow nav to size naturally; no fixed width */
+  padding: 10px 8px 10px 6px;
+}
+.vnav {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* smaller, consistent spacing */
+  align-items: center;
+}
+.vnav button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  display: inline-block;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 6px;
+  /* use writing-mode so text flows vertically without transforms */
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: none;
+  transition:
+    color 0.12s ease,
+    opacity 0.12s ease;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  opacity: 0.56;
+  cursor: pointer;
+}
+.vnav button:hover,
+.vnav button:focus {
+  color: var(--text);
+  opacity: 0.86;
+}
+
+/* Active state for currently visible section */
+.vnav button.active {
+  color: var(--text);
+  opacity: 1;
+}
+
+.vnav button:not(.active) {
+  opacity: 0.52;
+}
+
+@media (max-width: 720px) {
+  .vbar {
+    display: none;
+  }
+  /* remove reserved padding on small screens */
+  .container {
+    padding-left: 48px;
+  }
+}
+
+.hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.hero h1 {
+  font-size: clamp(28px, 6vw, 52px);
+  margin: 0 0 8px;
+}
+.tagline {
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+.cta-row {
+  display: flex;
+  gap: 12px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 8px 12px;
+  min-height: 36px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  border: 0;
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Ensure buttons and anchors inside modal controls match sizing */
+.modal-controls .btn,
+.modal-controls a.btn,
+.modal-controls button.btn {
+  padding: 8px 12px;
+  min-height: 36px;
+}
+
+.card {
+  background: linear-gradient(180deg, var(--elev), rgba(255, 255, 255, 0.01));
+  padding: 20px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card h5 {
+  margin-top: 0;
+}
+
+.repo-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.portfolio-note h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.portfolio-note pre {
+  margin: 0;
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card.muted {
+  color: var(--muted);
+}
+
+.card-title {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+.card-title a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+.card-title a:hover,
+.card-title a:focus {
+  color: var(--text);
+  border-bottom-color: rgba(230, 238, 242, 0.06);
+}
+.card-desc {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.meta-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.meta-links a {
+  color: var(--link);
+  font-weight: 600;
+}
+.meta-links a.live-link {
+  font-weight: 600;
+}
+
+/* Global link styles to avoid browser defaults (blue/underline) */
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition:
+    color 0.12s ease,
+    opacity 0.12s ease;
+}
+a:visited {
+  color: var(--link-muted);
+}
+a:hover,
+a:focus {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.social a {
+  color: var(--link);
+  margin-right: 12px;
+}
+.social a:hover {
+  color: var(--text);
+}
+
+/* Accessibility: focus states */
+a:focus {
+  outline: 2px solid rgba(230, 238, 242, 0.06);
+  outline-offset: 4px;
+}
+
+.footer {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+code {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--text);
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 96px 20px 96px 84px;
+  }
+}
+
+/* Modal / Project page styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 80;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+.modal-overlay.show {
+  opacity: 1;
+}
+.modal {
+  max-width: 980px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 12px;
+  padding: 18px;
+  background:
+    radial-gradient(1200px 400px at 10% 10%, rgba(255, 255, 255, 0.02), transparent), var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  transform: translateY(8px) scale(0.995);
+  opacity: 0;
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1),
+    opacity 180ms ease;
+}
+.modal.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.modal-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal pre {
+  white-space: pre-wrap;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.no-details {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid rgba(255, 165, 0, 0.14);
+  padding: 12px;
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+/* Scrollbar styling (Chromium browsers + Firefox fallback) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.06) rgba(255, 255, 255, 0.02);
+}
+
+/* WebKit-based browsers */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.06));
+}
+
+/* Slightly stronger thumb inside modal to improve contrast */
+.modal *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.05));
+}

@@ -1,0 +1,29 @@
+{
+  "name": "web-portfolio",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "generate:github-data": "node scripts/fetch-github-data.js",
+    "predev": "npm run generate:github-data",
+    "prebuild": "npm run generate:github-data",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5173",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.0",
+    "gh-pages": "^5.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.0.0"
+  }
+}
