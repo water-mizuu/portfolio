@@ -50,6 +50,8 @@ async function fetchAllRepos(owner) {
       { headers: githubHeaders() },
     );
 
+    console.log(githubHeaders());
+
     if (!response.ok) {
       throw new Error(`Failed to fetch repositories for ${owner}: ${response.status}`);
     }
@@ -155,6 +157,7 @@ function githubHeaders() {
   };
 
   if (process.env.GITHUB_TOKEN) {
+    console.log("Found github token.");
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
 
