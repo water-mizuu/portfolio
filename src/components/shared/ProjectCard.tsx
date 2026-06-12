@@ -9,7 +9,10 @@ interface Props {
 
 export default function ProjectCard({ repo, onOpen }: Props): ReactElement {
   return (
-    <article className="card">
+    <article
+      onClick={() => onOpen && onOpen(repo)}
+      className={`${onOpen && styles.clickableCard} card`}
+    >
       <h3 className={styles.cardTitle}>
         <a href={repo.url} target="_blank" rel="noreferrer">
           {repo.name}
@@ -18,7 +21,7 @@ export default function ProjectCard({ repo, onOpen }: Props): ReactElement {
       {repo.description && <p className={styles.cardDesc}>{repo.description}</p>}
       <div className={styles.cardMeta}>
         <span>{repo.language || "—"}</span>
-        <div className={styles.metaLinks}>
+        <div onClick={(e) => e.stopPropagation()} className={styles.metaLinks}>
           {repo.live && (
             <a className={styles.liveLink} href={repo.live} target="_blank" rel="noreferrer">
               Live
