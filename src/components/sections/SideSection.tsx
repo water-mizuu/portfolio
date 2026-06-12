@@ -1,5 +1,5 @@
 import { MouseEvent, ReactNode } from "react";
-import { SectionId } from "../types";
+import { SectionId } from "../../types";
 import styles from "./SideSection.module.css";
 
 interface Props {

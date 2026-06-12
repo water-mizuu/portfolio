@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { EMAIL, SITE } from "../config";
+import { EMAIL, SITE } from "../../config";
 import styles from "./HomeSection.module.css";
 
 export default function HomeSection(): ReactElement {

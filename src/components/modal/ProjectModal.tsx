@@ -1,6 +1,6 @@
 import Markdown from "marked-react";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import type { GitHubRepo } from "../types";
+import type { GitHubRepo } from "../../types";
 import styles from "./ProjectModal.module.css";
 
 interface Props {

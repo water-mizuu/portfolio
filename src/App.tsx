@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import styles from "./App.module.css";
-import AboutSection from "./components/AboutSection";
-import ContactSection from "./components/ContactSection";
-import HomeSection from "./components/HomeSection";
-import ProjectModal from "./components/ProjectModal";
-import ProjectsSection from "./components/ProjectsSection";
-import { SideSection } from "./components/SideSection";
-import SkillsSection from "./components/SkillsSection";
+import AboutSection from "./components/sections/AboutSection";
+import ContactSection from "./components/sections/ContactSection";
+import HomeSection from "./components/sections/HomeSection";
+import ProjectModal from "./components/modal/ProjectModal";
+import ProjectsSection from "./components/sections/ProjectsSection";
+import { SideSection } from "./components/sections/SideSection";
+import SkillsSection from "./components/sections/SkillsSection";
 import { GITHUB_REPOS } from "./generated/github-data";
 import { useActiveSection } from "./hooks/useActiveSection";
 import type { GitHubRepo } from "./types";
@@ -33,7 +33,7 @@ export default function App(): ReactNode {
         <ContactSection />
 
         <footer className={styles.footer}>
-          <small>© {new Date().getFullYear()} • Minimal portfolio</small>
+          <small>© {new Date().getFullYear()} • water-mizuu</small>
         </footer>
       </main>
     </div>

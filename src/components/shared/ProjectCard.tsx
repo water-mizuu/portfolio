@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import type { GitHubRepo } from "../types";
+import type { GitHubRepo } from "../../types";
 import styles from "./ProjectCard.module.css";
 
 interface Props {

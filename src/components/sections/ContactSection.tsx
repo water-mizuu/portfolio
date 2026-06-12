@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { EMAIL, SOCIALS } from "../config";
+import { EMAIL, SOCIALS } from "../../config";
 import styles from "./ContactSection.module.css";
 
 export default function ContactSection(): ReactElement {

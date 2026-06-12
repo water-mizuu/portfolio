@@ -4,14 +4,18 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "generate:github-data": "node scripts/fetch-github-data.js",
+    "generate:github-data": "node --env-file=.env scripts/fetch-github-data.js",
     "predev": "npm run generate:github-data",
     "prebuild": "npm run generate:github-data",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5173",
     "deploy": "gh-pages -d dist",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+
+    "generate:github-data-no-env": "node scripts/fetch-github-data.js",
+    "preghbuild": "npm run generate:github-data-no-env",
+    "ghbuild": "vite build"
   },
   "dependencies": {
     "marked": "^18.0.5",

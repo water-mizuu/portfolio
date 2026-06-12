@@ -36,7 +36,7 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - run: npm install
-      - run: npm run build
+      - run: npm run ghbuild
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Artifacts
