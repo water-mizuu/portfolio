@@ -76,3 +76,9 @@
 .modal *::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.05));
 }
+
+.readmeBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

@@ -14,6 +14,8 @@
     "predeploy": "npm run build"
   },
   "dependencies": {
+    "marked": "^18.0.5",
+    "marked-react": "^4.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
