@@ -1,0 +1,22 @@
+.hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.hero h1 {
+  font-size: clamp(28px, 6vw, 52px);
+  margin: 0 0 8px;
+}
+
+.tagline {
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 12px;
+}

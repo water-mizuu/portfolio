@@ -45,9 +45,8 @@ async function fetchAllRepos(owner) {
   let page = 1;
 
   while (true) {
-    const response = await fetch(
+    const response = await fetchGh(
       `https://api.github.com/users/${owner}/repos?sort=updated&per_page=100&page=${page}`,
-      { headers: githubHeaders() },
     );
 
     if (!response.ok) {
@@ -86,27 +85,29 @@ async function fetchRepoDetails(owner, repo) {
 
 async function readTopLevelPortfolioMd(owner, repoName) {
   try {
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repoName}/contents`, {
-      headers: githubHeaders(),
-    });
-
+    console.log(`https://api.github.com/repos/${owner}/${repoName}/contents`);
+    /// Fetch the contents of the repository.
+    const response = await fetchGh(`https://api.github.com/repos/${owner}/${repoName}/contents`);
     if (!response.ok) return null;
 
+    /// Get each individual content.
     const items = await response.json();
     if (!Array.isArray(items)) return null;
 
+    /// Look at the files found.
+    // console.log(items);
     const match = items.find(
-      (item) => item?.type === "file" && item?.name?.toLowerCase() === "portfolio.md",
+      (i) => i?.type === "file" && i?.name?.toLowerCase() === "portfolio.md",
     );
     if (!match) return null;
 
     if (match.download_url) {
-      const contentResponse = await fetch(match.download_url, { headers: githubHeaders() });
+      const contentResponse = await fetchGh(match.download_url);
       if (!contentResponse.ok) return null;
       return await contentResponse.text();
     }
 
-    const contentResponse = await fetch(match.url, { headers: githubHeaders() });
+    const contentResponse = await fetchGh(match.url);
     if (!contentResponse.ok) return null;
 
     const fileData = await contentResponse.json();
@@ -122,9 +123,7 @@ async function readTopLevelPortfolioMd(owner, repoName) {
 
 async function readRepoReadme(owner, repoName) {
   try {
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repoName}/readme`, {
-      headers: githubHeaders(),
-    });
+    const response = await fetchGh(`https://api.github.com/repos/${owner}/${repoName}/readme`);
 
     if (!response.ok) return null;
 
@@ -148,9 +147,20 @@ function findGithubPagesUrl(text) {
   return (githubPagesUrl || matches[0]).replace(/[)\.\s]+$/, "");
 }
 
+function fetchGh(url) {
+  return fetch(url, { headers: githubHeaders() });
+}
+
+/// Global mutable variables run by NodeJS require var.
+var _loadedHeaders = null;
+
 function githubHeaders() {
+  if (_loadedHeaders != null) {
+    return _loadedHeaders;
+  }
+
   const headers = {
-    Accept: "application/vnd.github.v3+json",
+    "Accept": "application/vnd.github.v3+json",
     "User-Agent": "web-portfolio-build-script",
   };
 
@@ -159,5 +169,5 @@ function githubHeaders() {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
 
-  return headers;
+  return (_loadedHeaders = headers);
 }

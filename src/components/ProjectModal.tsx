@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import type { GitHubRepo } from "../types";
+import styles from "./ProjectModal.module.css";
 
 interface Props {
   repo: GitHubRepo;
@@ -38,7 +39,7 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
 
   return (
     <div
-      className={"modal-overlay " + (visible ? "show" : "")}
+      className={`${styles.modalOverlay} ${visible ? styles.show : ""}`}
       role="dialog"
       aria-modal="true"
       aria-label={`Project ${repo.name}`}
@@ -47,10 +48,10 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
         if (e.target === e.currentTarget) handleClose();
       }}
     >
-      <div className={"modal " + (visible ? "show" : "")}>
-        <header className="modal-header">
+      <div className={`${styles.modal} ${visible ? styles.show : ""}`}>
+        <header className={styles.modalHeader}>
           <h2>{repo.name}</h2>
-          <div className="modal-controls">
+          <div className={styles.modalControls}>
             <a href={repo.url} target="_blank" rel="noreferrer" className="btn ghost">
               Repo
             </a>
@@ -65,7 +66,7 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
           </div>
         </header>
 
-        <div className="modal-body">
+        <div className={styles.modalBody}>
           <section className="card">
             <h3>About</h3>
             <p>{repo.description ?? "No description provided."}</p>
@@ -77,7 +78,7 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
               <pre>{repo.portfolioNote}</pre>
             ) : (
               // CHANGE HERE: To change the fallback message edit `NO_DETAILS_MESSAGE` above.
-              <div className="no-details">{NO_DETAILS_MESSAGE}</div>
+              <div className={styles.noDetails}>{NO_DETAILS_MESSAGE}</div>
             )}
           </section>
 

@@ -1,0 +1,12 @@
+.contact {
+  /* Scoped styles for Contact Section */
+}
+
+.social a {
+  color: var(--link);
+  margin-right: 12px;
+}
+
+.social a:hover {
+  color: var(--text);
+}

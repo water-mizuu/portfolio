@@ -1,5 +1,6 @@
 import { MouseEvent, ReactNode } from "react";
 import { SectionId } from "../types";
+import styles from "./SideSection.module.css";
 
 interface Props {
   activeSection: SectionId;
@@ -8,25 +9,25 @@ interface Props {
 
 export function SideSection({ activeSection, handleNavClick }: Props): ReactNode {
   return (
-    <aside className="vbar" aria-hidden="false">
-      <nav className="vnav" aria-label="Primary">
+    <aside className={styles.vbar} aria-hidden="false">
+      <nav className={styles.vnav} aria-label="Primary">
         <button
           type="button"
-          className={activeSection === "home" ? "active" : ""}
+          className={activeSection === "home" ? styles.active : ""}
           onClick={(event) => handleNavClick(event, "home")}
         >
           Home
         </button>
         <button
           type="button"
-          className={activeSection === "projects" ? "active" : ""}
+          className={activeSection === "projects" ? styles.active : ""}
           onClick={(event) => handleNavClick(event, "projects")}
         >
           Projects
         </button>
         <button
           type="button"
-          className={activeSection === "contact" ? "active" : ""}
+          className={activeSection === "contact" ? styles.active : ""}
           onClick={(event) => handleNavClick(event, "contact")}
         >
           Contact

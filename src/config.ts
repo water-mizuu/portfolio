@@ -4,9 +4,9 @@ export const GITHUB_USERNAME = "water-mizuu";
 export const REPO_COUNT = 6;
 
 export const SITE: SiteConfig = {
-  name: "Software Engineer",
-  headline: "Software Engineer",
-  tagline: "Minimal. Technical. Single-screen.",
+  ///
+  headline: "John Michael Zuniga",
+  tagline: "Software Engineer & AI/ML Engineer",
   resumePath: "/resume.pdf",
 };
 

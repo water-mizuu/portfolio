@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import type { GitHubRepo } from "../types";
+import styles from "./ProjectCard.module.css";
 
 interface Props {
   repo: GitHubRepo;
@@ -9,17 +10,17 @@ interface Props {
 export default function ProjectCard({ repo, onOpen }: Props): ReactElement {
   return (
     <article className="card">
-      <h3 className="card-title">
+      <h3 className={styles.cardTitle}>
         <a href={repo.url} target="_blank" rel="noreferrer">
           {repo.name}
         </a>
       </h3>
-      {repo.description && <p className="card-desc">{repo.description}</p>}
-      <div className="card-meta">
+      {repo.description && <p className={styles.cardDesc}>{repo.description}</p>}
+      <div className={styles.cardMeta}>
         <span>{repo.language || "—"}</span>
-        <div className="meta-links">
+        <div className={styles.metaLinks}>
           {repo.live && (
-            <a className="live-link" href={repo.live} target="_blank" rel="noreferrer">
+            <a className={styles.liveLink} href={repo.live} target="_blank" rel="noreferrer">
               Live
             </a>
           )}

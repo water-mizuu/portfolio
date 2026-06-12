@@ -1,7 +1,7 @@
 export type SectionId = "home" | "about" | "projects" | "repo-notes" | "skills" | "contact";
 
 export interface SiteConfig {
-  name: string;
+  // name: string;
   headline: string;
   tagline: string;
   resumePath: string;

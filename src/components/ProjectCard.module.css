@@ -1,0 +1,44 @@
+.cardTitle {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.cardTitle a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+.cardTitle a:hover,
+.cardTitle a:focus {
+  color: var(--text);
+  border-bottom-color: rgba(230, 238, 242, 0.06);
+}
+
+.cardDesc {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.metaLinks {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.metaLinks a {
+  color: var(--link);
+  font-weight: 600;
+}
+
+.metaLinks a.liveLink {
+  font-weight: 600;
+}

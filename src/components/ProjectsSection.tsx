@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import type { GitHubRepo } from "../types";
 import ProjectCard from "./ProjectCard";
+import styles from "./ProjectsSection.module.css";
 
 interface Props {
   repos: GitHubRepo[];
@@ -9,9 +10,9 @@ interface Props {
 
 export default function ProjectsSection({ repos, onOpen }: Props): ReactElement {
   return (
-    <section id="projects" className="projects">
+    <section id="projects" className={styles.projects}>
       <h2>Projects</h2>
-      <div className="projects-list">
+      <div className={styles.projectsList}>
         {repos.length === 0 && (
           <div className="card muted">
             No projects found — set your GitHub username in <code>src/config.ts</code>.
