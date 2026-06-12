@@ -5,7 +5,7 @@ export const REPO_COUNT = 6;
 
 export const SITE: SiteConfig = {
   ///
-  headline: "John Michael Zuniga",
+  headline: "John Michael Zuñiga",
   tagline: "Software Engineer & AI/ML Engineer",
   resumePath: "/resume.pdf",
 };

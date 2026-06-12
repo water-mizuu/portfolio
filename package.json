@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "generate:github-data": "node --env-file=.env scripts/fetch-github-data.js",
+    "generate:github-data": "node scripts/fetch-github-data.js",
     "predev": "npm run generate:github-data",
     "prebuild": "npm run generate:github-data",
     "dev": "vite",

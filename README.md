@@ -7,15 +7,6 @@ Overview
 - No photo or logo — headline `Software Engineer`
 - Static site intended for GitHub Pages deployment
 
-Color options
-
-- Default (cyan accent): dark `#0b0f12` + accent `#00d1ff`
-- Slate + Orange: dark `#0b0d10` + accent `#ff8a00`
-- Deep Blue + Purple: dark `#030417` + accent `#7b61ff`
-- Charcoal + Green: dark `#0b0b0b` + accent `#5af27c`
-
-To customize: edit the CSS variables at `src/styles.css` top or pick another hex.
-
 Setup
 
 1. Install dependencies:
