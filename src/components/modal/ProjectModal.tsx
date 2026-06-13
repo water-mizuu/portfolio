@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import type { GitHubRepo } from "../../types";
+import ImageLightbox from "./ImageLightbox";
 import ProjectCardSection from "./ProjectCardSection";
 import styles from "./ProjectModal.module.css";
 
@@ -11,19 +12,27 @@ interface Props {
 export default function ProjectModal({ repo, onClose }: Props): ReactElement {
   const [visible, setVisible] = useState(false);
   const closingRef = useRef(false);
+  const [activeImage, setActiveImage] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     // entrance animation
     requestAnimationFrame(() => setVisible(true));
   }, []);
 
+  /// Key onPress listener.
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") handleClose();
-    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (activeImage === null) {
+          handleClose();
+        }
+      }
+    };
+
     window.addEventListener("keydown", onKey);
+
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [activeImage]);
 
   function handleClose() {
     if (closingRef.current) return;
@@ -33,52 +42,68 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
   }
 
   return (
-    <div
-      className={`${styles.modalOverlay} ${visible ? styles.show : ""}`}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Project ${repo.name}`}
-      onMouseDown={(e) => {
-        if (e.button !== 0) return;
-        if (e.target === e.currentTarget) handleClose();
-      }}
-    >
-      <div className={`${styles.modal} ${visible ? styles.show : ""}`}>
-        <div className="top">
-          <header className={styles.modalHeader}>
-            <h2>{repo.name}</h2>
-            <div className={styles.modalControls}>
-              {repo.live && (
-                <a href={repo.live} target="_blank" rel="noreferrer" className="btn">
-                  Live
+    <>
+      <div
+        className={`${styles.modalOverlay} ${visible ? styles.show : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Project ${repo.name}`}
+        onMouseDown={(e) => {
+          if (e.button !== 0) return;
+          if (e.target === e.currentTarget) handleClose();
+        }}
+      >
+        <div className={`${styles.modal} ${visible ? styles.show : ""}`}>
+          <div className="top">
+            <header className={styles.modalHeader}>
+              <h2>{repo.name}</h2>
+              <div className={styles.modalControls}>
+                {repo.live && (
+                  <a href={repo.live} target="_blank" rel="noreferrer" className="btn">
+                    Live
+                  </a>
+                )}
+                <a href={repo.url} target="_blank" rel="noreferrer" className="btn ghost">
+                  Repo
                 </a>
-              )}
-              <a href={repo.url} target="_blank" rel="noreferrer" className="btn ghost">
-                Repo
-              </a>
-              <button className="btn ghost" onClick={handleClose} aria-label="Close project modal">
-                Close
-              </button>
-            </div>
-          </header>
+                <button
+                  className="btn ghost"
+                  onClick={handleClose}
+                  aria-label="Close project modal"
+                >
+                  Close
+                </button>
+              </div>
+            </header>
 
-          <div>{repo.description}</div>
-        </div>
+            <div>{repo.description}</div>
+          </div>
 
-        <div className={styles.modalBody}>
-          <ProjectCardSection
-            content={repo.portfolioNote || ""}
-            repoUrl={repo.url}
-            defaultBranch={repo.defaultBranch}
-          />
+          <div className={styles.modalBody}>
+            <ProjectCardSection
+              content={repo.portfolioNote || ""}
+              repoUrl={repo.url}
+              defaultBranch={repo.defaultBranch}
+              onImageClick={(src, alt) => setActiveImage({ src, alt })}
+            />
 
-          <ProjectCardSection
-            content={repo.readme || ""}
-            repoUrl={repo.url}
-            defaultBranch={repo.defaultBranch}
-          />
+            <ProjectCardSection
+              content={repo.readme || ""}
+              repoUrl={repo.url}
+              defaultBranch={repo.defaultBranch}
+              onImageClick={(src, alt) => setActiveImage({ src, alt })}
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+      {activeImage && (
+        <ImageLightbox
+          src={activeImage.src}
+          alt={activeImage.alt}
+          onClose={() => setActiveImage(null)}
+        />
+      )}
+    </>
   );
 }

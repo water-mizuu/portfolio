@@ -7,6 +7,7 @@ interface ProjectCardSectionProps {
   content: string;
   repoUrl: string;
   defaultBranch?: string;
+  onImageClick?: (url: string, alt: string) => void;
 }
 
 export default function ProjectCardSection({
@@ -14,6 +15,7 @@ export default function ProjectCardSection({
   content,
   repoUrl,
   defaultBranch = "main",
+  onImageClick,
 }: ProjectCardSectionProps): ReactElement | null {
   if (!content || content.trim().length === 0) return null;
 
@@ -38,7 +40,19 @@ export default function ProjectCardSection({
           const resolvedUrl = resolveImageUrl(img.url, repoUrl, defaultBranch);
           return (
             <div key={index} className={styles.imageCardWrapper}>
-              <div className={styles.imageMockup}>
+              <div
+                className={styles.imageMockup}
+                onClick={() => onImageClick?.(resolvedUrl, img.alt)}
+                role="button"
+                tabIndex={0}
+                aria-label={`View image: ${img.alt || "Project image"}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onImageClick?.(resolvedUrl, img.alt);
+                  }
+                }}
+              >
                 <img src={resolvedUrl} alt={img.alt} />
               </div>
               {img.alt && <p className={styles.imageCaption}>“{img.alt}”</p>}

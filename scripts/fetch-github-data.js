@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, cp } from "node:fs/promises";
+import { cp as copy, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,7 +18,7 @@ if (!username) {
 try {
   const localPortfolioDir = path.join(rootDir, "portfolio");
   const publicPortfolioDir = path.join(rootDir, "public", "portfolio");
-  await cp(localPortfolioDir, publicPortfolioDir, { recursive: true });
+  await copy(localPortfolioDir, publicPortfolioDir, { recursive: true });
   console.log("Successfully copied local portfolio assets to public/portfolio");
 } catch (err) {
   console.log("Skipping portfolio assets copy:", err.message);
@@ -41,6 +41,11 @@ await writeFile(
   "utf8",
 );
 
+/**
+ * Reads the GitHub username from the given configuration file.
+ * @param {string} filePath - The absolute or relative path to the configuration file.
+ * @returns {Promise<string>} The parsed GitHub username, or an empty string if not found.
+ */
 async function readGitHubUsername(filePath) {
   const content = await readFile(filePath, "utf8");
   const match = content.match(/export const GITHUB_USERNAME = [\"'`](.+?)[\"'`];/);
@@ -51,6 +56,11 @@ async function readGitHubUsername(filePath) {
   return "";
 }
 
+/**
+ * Fetches all public repositories for a given GitHub owner/username.
+ * @param {string} owner - The GitHub username.
+ * @returns {Promise<any[]>} A promise that resolves to an array of repository objects.
+ */
 async function fetchAllRepos(owner) {
   const allRepos = [];
   let page = 1;
@@ -75,6 +85,14 @@ async function fetchAllRepos(owner) {
   return allRepos;
 }
 
+/**
+ * Fetches specific details of a repository, including its README and PORTFOLIO.md.
+ * If the repository is configured to be hidden (e.g., contains rank -1) or lacks a PORTFOLIO.md,
+ * returns null.
+ * @param {string} owner - The GitHub username.
+ * @param {any} repo - The repository object containing metadata.
+ * @returns {Promise<any | null>} A promise that resolves to the formatted repository data, or null if it should be excluded.
+ */
 async function fetchRepoDetails(owner, repo) {
   let readme = null;
   let portfolioNote = null;
@@ -99,14 +117,18 @@ async function fetchRepoDetails(owner, repo) {
     ]);
   }
 
-  if (portfolioNote != null) {
-    /// If we have a portfolio.md with the rank -1,
-    ///   We explicitly opt to hide it from our portfolio.
-    for (const line of portfolioNote.split("\n")) {
-      const result = line.match(/\<!--\s*rank:\s*-1\s*-->/);
-      if (result != null) {
-        return null;
-      }
+  /// We now only display the repositories with the PORTFOLIO.md as to
+  ///   ensure that this is only opt-in.
+  if (portfolioNote == null) return null;
+
+  /// If we have a portfolio.md with the rank -1,
+  ///   We explicitly opt to hide it from our portfolio.
+  ///   TODO: Remove this. Since the PORTFOLIO.md is opt-in,
+  ///     this shouldn't be a thing anymore.
+  for (const line of portfolioNote.split("\n")) {
+    const result = line.match(/\<!--\s*rank:\s*-1\s*-->/);
+    if (result != null) {
+      return null;
     }
   }
 
@@ -120,10 +142,17 @@ async function fetchRepoDetails(owner, repo) {
     language: repo.language,
     defaultBranch: repo.default_branch || "master",
     readme,
-    portfolioNote: removeHtmlComments(portfolioNote),
+    portfolioNote: portfolioNote != null ? removeHtmlComments(portfolioNote) : undefined,
   };
 }
 
+/**
+ * Reads the portfolio.md file from the top level of the specified repository.
+ * Attempts to download it directly or falls back to reading the Base64 content from the API.
+ * @param {string} owner - The GitHub username.
+ * @param {string} repoName - The name of the repository.
+ * @returns {Promise<string | null>} The text content of portfolio.md, or null if it doesn't exist or failed to load.
+ */
 async function readTopLevelPortfolioMd(owner, repoName) {
   try {
     /// Fetch the contents of the repository.
@@ -161,6 +190,12 @@ async function readTopLevelPortfolioMd(owner, repoName) {
   }
 }
 
+/**
+ * Reads the README file of the specified repository from the GitHub API.
+ * @param {string} owner - The GitHub username.
+ * @param {string} repoName - The name of the repository.
+ * @returns {Promise<string | null>} The decoded README text content, or null if it failed to load.
+ */
 async function readRepoReadme(owner, repoName) {
   try {
     const response = await fetchGh(`https://api.github.com/repos/${owner}/${repoName}/readme`);
@@ -177,6 +212,11 @@ async function readRepoReadme(owner, repoName) {
   }
 }
 
+/**
+ * Parses a GitHub Pages URL from a text description if it exists.
+ * @param {string} text - The input text containing the URL.
+ * @returns {string | null} The extracted GitHub Pages URL, or null if not found.
+ */
 function findGithubPagesUrl(text) {
   if (!text) return null;
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -186,6 +226,11 @@ function findGithubPagesUrl(text) {
   return (githubPagesUrl || matches[0]).replace(/[)\.\s]+$/, "");
 }
 
+/**
+ * Shortcut function for using fetch with GitHub API headers included.
+ * @param {string} url - The URL to fetch.
+ * @returns {Promise<Response>} A promise that resolves to the Fetch Response object.
+ */
 function fetchGh(url) {
   return fetch(url, { headers: githubHeaders() });
 }
@@ -193,6 +238,11 @@ function fetchGh(url) {
 /// Global mutable variables run by NodeJS require var.
 var _loadedHeaders = null;
 
+/**
+ * Retrieves the headers required for making requests to the GitHub API,
+ * including authentication token if available in the environment variables.
+ * @returns {Record<string, string>} GitHub API headers.
+ */
 function githubHeaders() {
   if (_loadedHeaders != null) {
     return _loadedHeaders;
@@ -211,12 +261,22 @@ function githubHeaders() {
   return (_loadedHeaders = headers);
 }
 
+/**
+ * Converts camelCase names into snake_case values.
+ * @param {string} value - The input string in camelCase.
+ * @returns {string} The converted snake_case string.
+ */
 function camelToSnakeCase(value) {
   const regex = /((?:[A-Z][a-z])|(?:(?<=[a-z])[^a-z])|(?:(?<=[A-Z])[0-9_]))/g;
 
   return value.toString().replace(regex, "_$1".toLowerCase());
 }
 
+/**
+ * Converts a string (typically camelCase, snake_case, or kebab-case) into Title Case.
+ * @param {string} value - The input string.
+ * @returns {string} The converted Title Case string.
+ */
 function toTitleCase(value) {
   // Use camelToSnakeCase to break up camelCase words first
   const snake = camelToSnakeCase(value.toString());
@@ -234,9 +294,13 @@ function toTitleCase(value) {
     .join(" ");
 }
 
+/**
+ * Removes all HTML comments from a string.
+ * @param {string | null} string - The input string containing HTML comments.
+ * @returns {string | null} The sanitized string with comments removed, or null if input was null.
+ */
 function removeHtmlComments(string) {
   if (string == null) return null;
 
   return string.replace(/<!--(?:.|\n)*?-->/g, "");
 }
-
