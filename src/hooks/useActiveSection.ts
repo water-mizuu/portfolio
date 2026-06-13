@@ -1,5 +1,4 @@
-import type { MouseEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import type { SectionId } from "../types";
 
 export function useActiveSection() {
@@ -45,7 +44,6 @@ export function useActiveSection() {
         const overlapBottom = Math.min(rect.bottom, triggerBottom);
         const overlapHeight = Math.max(0, overlapBottom - overlapTop);
         const ratio = overlapHeight / triggerHeight;
-
         sectionRatiosRef.current.set(id, ratio);
 
         if (ratio > bestRatio) {
@@ -54,10 +52,9 @@ export function useActiveSection() {
         }
       }
 
-      // Edge case: If the user scrolls to the absolute bottom of the page, force active section to "contact"
-      const scrollEndReached =
-        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-      if (scrollEndReached) {
+      // Edge case: If the user scrolls to the absolute bottom of the page,
+      //    force active section to "contact"
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
         setActiveSection("contact");
         return;
       }

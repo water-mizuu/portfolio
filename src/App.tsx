@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import styles from "./App.module.css";
+import ProjectModal from "./components/modal/ProjectModal";
 import AboutSection from "./components/sections/AboutSection";
 import ContactSection from "./components/sections/ContactSection";
 import HomeSection from "./components/sections/HomeSection";
-import ProjectModal from "./components/modal/ProjectModal";
 import ProjectsSection from "./components/sections/ProjectsSection";
-import { SideSection } from "./components/sections/SideSection";
 import SkillsSection from "./components/sections/SkillsSection";
+import { SideSection } from "./components/sections/SideSection";
 import { GITHUB_REPOS } from "./generated/github-data";
 import { useActiveSection } from "./hooks/useActiveSection";
 import type { GitHubRepo } from "./types";
@@ -27,9 +27,8 @@ export default function App(): ReactNode {
       <main className={styles.container}>
         <HomeSection />
         <AboutSection />
-        <ProjectsSection repos={GITHUB_REPOS} onOpen={(r) => setSelectedRepo(r)} />
-
         <SkillsSection />
+        <ProjectsSection repos={GITHUB_REPOS} onOpen={(r) => setSelectedRepo(r)} />
         <ContactSection />
 
         <footer className={styles.footer}>
@@ -39,3 +38,4 @@ export default function App(): ReactNode {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { type ReactElement } from "react";
 import { EMAIL, SITE } from "../../config";
 import styles from "./HomeSection.module.css";
 

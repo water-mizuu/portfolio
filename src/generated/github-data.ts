@@ -4,18 +4,18 @@ import type { GitHubRepo } from "../types";
 export const GITHUB_REPOS: GitHubRepo[] = [
   {
     "id": 1267413825,
-    "name": "portfolio",
-    "description": null,
+    "name": "Portfolio",
+    "description": "A work-in-progress portfolio.",
     "url": "https://github.com/water-mizuu/portfolio",
-    "homepage": null,
-    "live": null,
+    "homepage": "https://water-mizuu.github.io/portfolio/",
+    "live": "https://water-mizuu.github.io/portfolio/",
     "language": "TypeScript",
     "readme": "Minimal single-screen portfolio (React + Vite)\n\nOverview\n\n- Single-column, vertical scroll only\n- Minimal, technical tone\n- No photo or logo — headline `Software Engineer`\n- Static site intended for GitHub Pages deployment\n\nSetup\n\n1. Install dependencies:\n\n```bash\nnpm install\n```\n\n2. Run dev server:\n\n```bash\nnpm run dev\n```\n\n3. Build:\n\n```bash\nnpm run build\n```\n\n4. Deploy to GitHub Pages (requires `gh-pages` and a repo configured):\n\n```bash\nnpm run deploy\n```\n\nConfiguration\n\n- Set your GitHub username in `src/config.ts` (`GITHUB_USERNAME`) so the build-time data generator knows which account to snapshot.\n- Add a `resume.pdf` to the `public/` folder (path `/resume.pdf`) or change `SITE.resumePath` in `src/config.js`.\n- Update contact email and social links in `src/App.tsx`.\n\nNotes\n\n- Repo metadata, README content, and top-level `portfolio.md` files are fetched during `npm run dev` and `npm run build`, then written to `src/generated/github-data.ts`.\n- The app no longer hits the GitHub API in the browser.\n- If you'd like, I can replace the static `you@example.com` and social placeholders with your real links.\n",
     "portfolioNote": "<!-- rank: 3 -->\n"
   },
   {
     "id": 673026450,
-    "name": "parser_peg",
+    "name": "Parser Peg",
     "description": null,
     "url": "https://github.com/water-mizuu/parser_peg",
     "homepage": null,
@@ -26,7 +26,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 1182673385,
-    "name": "glush_dart",
+    "name": "Glush Dart",
     "description": null,
     "url": "https://github.com/water-mizuu/glush_dart",
     "homepage": null,
@@ -37,7 +37,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 976023294,
-    "name": "scale_up",
+    "name": "Scale Up",
     "description": "A unit conversion learning application built using Flutter. A github pages simulation is available:",
     "url": "https://github.com/water-mizuu/scale_up",
     "homepage": "https://water-mizuu.github.io/scale_up/",
@@ -48,7 +48,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 912253191,
-    "name": "application_server",
+    "name": "Application Server",
     "description": "A flutter desktop app which experiments with hosting an HTTP Server alongside the usual application.",
     "url": "https://github.com/water-mizuu/application_server",
     "homepage": null,
@@ -59,7 +59,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 1079071812,
-    "name": "bayesian-adhd",
+    "name": "Bayesian Adhd",
     "description": null,
     "url": "https://github.com/water-mizuu/bayesian-adhd",
     "homepage": null,
@@ -70,7 +70,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 980370097,
-    "name": "plant_detection",
+    "name": "Plant Detection",
     "description": "An invasive plant detection mobile application using TFLite",
     "url": "https://github.com/water-mizuu/plant_detection",
     "homepage": null,
@@ -81,7 +81,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 850965498,
-    "name": "finite_automata_conversion",
+    "name": "Finite Automata Conversion",
     "description": "A project implementing the Glushkov Construction Algorithm, Thompson Construction Algorithm, and other Finite Automata-related concepts.",
     "url": "https://github.com/water-mizuu/finite_automata_conversion",
     "homepage": "",
@@ -92,7 +92,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 663846206,
-    "name": "prompt",
+    "name": "Prompt",
     "description": "Dart library which allows decorated CLI which asks information from the user.",
     "url": "https://github.com/water-mizuu/prompt",
     "homepage": null,
@@ -103,7 +103,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 653530421,
-    "name": "twenty_fourty_eight",
+    "name": "Twenty Fourty Eight",
     "description": null,
     "url": "https://github.com/water-mizuu/twenty_fourty_eight",
     "homepage": null,
@@ -114,7 +114,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 973444669,
-    "name": "sudoku_simulator",
+    "name": "Sudoku Simulator",
     "description": null,
     "url": "https://github.com/water-mizuu/sudoku_simulator",
     "homepage": "https://water-mizuu.github.io/sudoku_simulator/",
@@ -125,7 +125,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 578652887,
-    "name": "img_to_pdf",
+    "name": "Img To Pdf",
     "description": "Helper program that converts directories of directories of images into complete pdf files.",
     "url": "https://github.com/water-mizuu/img_to_pdf",
     "homepage": null,
@@ -136,7 +136,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 888892661,
-    "name": "identipie",
+    "name": "Identipie",
     "description": "An intelligent-agent computer vision application",
     "url": "https://github.com/water-mizuu/identipie",
     "homepage": null,
@@ -147,7 +147,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 878098790,
-    "name": "web_finite_automata",
+    "name": "Web Finite Automata",
     "description": "An integrated web-application that supports the conversion of basic Regular Expressions into NFAs and DFAs through the use of Glushkov's Construction Algorithm and Hopcroft's Algorithm.",
     "url": "https://github.com/water-mizuu/web_finite_automata",
     "homepage": "https://water-mizuu.github.io/web_finite_automata/",
@@ -158,7 +158,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 891638735,
-    "name": "band_management",
+    "name": "Band Management",
     "description": "A sample application done for the partial requirement of ITE013.",
     "url": "https://github.com/water-mizuu/band_management",
     "homepage": null,
@@ -169,7 +169,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 716185979,
-    "name": "tasks",
+    "name": "Tasks",
     "description": null,
     "url": "https://github.com/water-mizuu/tasks",
     "homepage": null,
@@ -180,7 +180,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 882352078,
-    "name": "web_dijkstra",
+    "name": "Web Dijkstra",
     "description": "An example implementation of Dijkstra's algorithm with a step-by-step simulation.",
     "url": "https://github.com/water-mizuu/web_dijkstra",
     "homepage": "https://water-mizuu.github.io/web_dijkstra/",
@@ -191,7 +191,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 875611741,
-    "name": "flutter_tetris",
+    "name": "Flutter Tetris",
     "description": "An experimental tetris implementation in Flutter for desktop.",
     "url": "https://github.com/water-mizuu/flutter_tetris",
     "homepage": null,
@@ -201,19 +201,8 @@ export const GITHUB_REPOS: GitHubRepo[] = [
     "portfolioNote": null
   },
   {
-    "id": 873973332,
-    "name": "water-mizuu.github.io",
-    "description": "A Github hosted page for water-mizuu.",
-    "url": "https://github.com/water-mizuu/water-mizuu.github.io",
-    "homepage": null,
-    "live": null,
-    "language": "HTML",
-    "readme": null,
-    "portfolioNote": null
-  },
-  {
     "id": 864449703,
-    "name": "image_manipulation",
+    "name": "Image Manipulation",
     "description": "Code implementing simple image manipulation algorithms",
     "url": "https://github.com/water-mizuu/image_manipulation",
     "homepage": null,
@@ -224,7 +213,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 580393523,
-    "name": "playground",
+    "name": "Playground",
     "description": "Random code",
     "url": "https://github.com/water-mizuu/playground",
     "homepage": null,
@@ -235,7 +224,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 711218757,
-    "name": "fridgital",
+    "name": "Fridgital",
     "description": "fridgital",
     "url": "https://github.com/water-mizuu/fridgital",
     "homepage": null,
@@ -246,7 +235,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 789321328,
-    "name": "priority_scheduling",
+    "name": "Priority Scheduling",
     "description": "A flutter-based GUI application that implements Priority process scheduling.",
     "url": "https://github.com/water-mizuu/priority_scheduling",
     "homepage": null,
@@ -257,7 +246,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 577744730,
-    "name": "advent_of_code",
+    "name": "Advent Of Code",
     "description": null,
     "url": "https://github.com/water-mizuu/advent_of_code",
     "homepage": null,
@@ -268,7 +257,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 655370925,
-    "name": "key_listener",
+    "name": "Key Listener",
     "description": null,
     "url": "https://github.com/water-mizuu/key_listener",
     "homepage": null,
@@ -279,7 +268,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 600648601,
-    "name": "truth_table_generator",
+    "name": "Truth Table Generator",
     "description": "Does Symbolic Logic things.",
     "url": "https://github.com/water-mizuu/truth_table_generator",
     "homepage": null,
@@ -290,7 +279,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 645177361,
-    "name": "wave_function_collapse",
+    "name": "Wave Function Collapse",
     "description": null,
     "url": "https://github.com/water-mizuu/wave_function_collapse",
     "homepage": null,
@@ -301,7 +290,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 578709271,
-    "name": "terminal_calculator",
+    "name": "Terminal Calculator",
     "description": "Calculator application that implements specialized syntax in terminal",
     "url": "https://github.com/water-mizuu/terminal_calculator",
     "homepage": null,
@@ -312,7 +301,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
   },
   {
     "id": 578636352,
-    "name": "parser_combinator",
+    "name": "Parser Combinator",
     "description": null,
     "url": "https://github.com/water-mizuu/parser_combinator",
     "homepage": null,

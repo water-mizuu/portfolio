@@ -2,11 +2,38 @@
   /* Scoped styles for Contact Section */
 }
 
-.social a {
-  color: var(--link);
-  margin-right: 12px;
+.contactRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
 }
 
-.social a:hover {
-  color: var(--text);
+.contactButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--link-muted);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
+
+.contactButton:hover,
+.contactButton:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.contactButton svg {
+  display: block;
+}
+

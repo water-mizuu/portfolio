@@ -12,7 +12,6 @@
     "preview": "vite preview --port 5173",
     "deploy": "gh-pages -d dist",
     "predeploy": "npm run build",
-
     "generate:github-data-no-env": "node scripts/fetch-github-data.js",
     "preghbuild": "npm run generate:github-data-no-env",
     "ghbuild": "vite build"

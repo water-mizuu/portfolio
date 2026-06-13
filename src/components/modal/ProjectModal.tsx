@@ -71,7 +71,7 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
 
           {repo.portfolioNote && (
             <section className="card">
-              <h3>Portfolio.md</h3>
+              <h3>Portfolio Notes</h3>
               <pre>{repo.portfolioNote}</pre>
             </section>
           )}

@@ -7,13 +7,14 @@ export const SITE: SiteConfig = {
   ///
   headline: "John Michael Zuñiga",
   tagline: "Software Engineer & AI/ML Engineer",
-  resumePath: "/resume.pdf",
+  resumePath: "/curriculum-vitae.pdf",
 };
 
 export const EMAIL = "jmt.zuniga.z@gmail.com";
 
 export const SOCIALS: SocialLinks = {
   github: `https://github.com/${GITHUB_USERNAME}`,
-  linkedin: "",
+  linkedin: "https://www.linkedin.com/in/john-michael-zuniga-106982335/",
   twitter: "",
 };
+

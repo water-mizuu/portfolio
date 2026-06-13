@@ -20,6 +20,20 @@ export function SideSection({ activeSection, handleNavClick }: Props): ReactNode
         </button>
         <button
           type="button"
+          className={activeSection === "about" ? styles.active : ""}
+          onClick={(event) => handleNavClick(event, "about")}
+        >
+          About
+        </button>
+        <button
+          type="button"
+          className={activeSection === "skills" ? styles.active : ""}
+          onClick={(event) => handleNavClick(event, "skills")}
+        >
+          Skills
+        </button>
+        <button
+          type="button"
           className={activeSection === "projects" ? styles.active : ""}
           onClick={(event) => handleNavClick(event, "projects")}
         >
@@ -32,6 +46,7 @@ export function SideSection({ activeSection, handleNavClick }: Props): ReactNode
         >
           Contact
         </button>
+
       </nav>
     </aside>
   );

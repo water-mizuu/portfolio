@@ -1,5 +1,4 @@
-import type { ReactElement } from "react";
-import { useState } from "react";
+import { type ReactElement, useState } from "react";
 import type { GitHubRepo } from "../../types";
 import ProjectCard from "../shared/ProjectCard";
 import styles from "./ProjectsSection.module.css";
@@ -33,12 +32,15 @@ export default function ProjectsSection({ repos, onOpen }: Props): ReactElement 
   );
 }
 
-type MoreProps = { setShownRepoCount: (n: (v: number) => number) => void; remaining: number };
+type MoreProps = {
+  setShownRepoCount: (n: (v: number) => number) => void;
+  remaining: number; //
+};
 function More({ setShownRepoCount, remaining }: MoreProps): ReactElement {
   return (
     <>
       {remaining > 0 && (
-        <button class="btn" onClick={() => setShownRepoCount((curr) => curr + 5)}>
+        <button className="btn" onClick={() => setShownRepoCount((curr) => curr + 5)}>
           Show More {`+${remaining} remaining`}
         </button>
       )}
