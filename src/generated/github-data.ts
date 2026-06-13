@@ -11,7 +11,7 @@ export const GITHUB_REPOS: GitHubRepo[] = [
     "live": "https://water-mizuu.github.io/portfolio/",
     "language": "TypeScript",
     "readme": "Minimal single-screen portfolio (React + Vite)\n\nOverview\n\n- Single-column, vertical scroll only\n- Minimal, technical tone\n- No photo or logo — headline `Software Engineer`\n- Static site intended for GitHub Pages deployment\n\nSetup\n\n1. Install dependencies:\n\n```bash\nnpm install\n```\n\n2. Run dev server:\n\n```bash\nnpm run dev\n```\n\n3. Build:\n\n```bash\nnpm run build\n```\n\n4. Deploy to GitHub Pages (requires `gh-pages` and a repo configured):\n\n```bash\nnpm run deploy\n```\n\nConfiguration\n\n- Set your GitHub username in `src/config.ts` (`GITHUB_USERNAME`) so the build-time data generator knows which account to snapshot.\n- Add a `resume.pdf` to the `public/` folder (path `/resume.pdf`) or change `SITE.resumePath` in `src/config.js`.\n- Update contact email and social links in `src/App.tsx`.\n\nNotes\n\n- Repo metadata, README content, and top-level `portfolio.md` files are fetched during `npm run dev` and `npm run build`, then written to `src/generated/github-data.ts`.\n- The app no longer hits the GitHub API in the browser.\n- If you'd like, I can replace the static `you@example.com` and social placeholders with your real links.\n",
-    "portfolioNote": "<!-- rank: 3 -->\n"
+    "portfolioNote": "\n"
   },
   {
     "id": 673026450,

@@ -46,40 +46,40 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
       }}
     >
       <div className={`${styles.modal} ${visible ? styles.show : ""}`}>
-        <header className={styles.modalHeader}>
-          <h2>{repo.name}</h2>
-          <div className={styles.modalControls}>
-            {repo.live && (
-              <a href={repo.live} target="_blank" rel="noreferrer" className="btn">
-                Live
+        <div className="top">
+          <header className={styles.modalHeader}>
+            <h2>{repo.name}</h2>
+            <div className={styles.modalControls}>
+              {repo.live && (
+                <a href={repo.live} target="_blank" rel="noreferrer" className="btn">
+                  Live
+                </a>
+              )}
+              <a href={repo.url} target="_blank" rel="noreferrer" className="btn ghost">
+                Repo
               </a>
-            )}
-            <a href={repo.url} target="_blank" rel="noreferrer" className="btn ghost">
-              Repo
-            </a>
-            <button className="btn ghost" onClick={handleClose} aria-label="Close project modal">
-              Close
-            </button>
-          </div>
-        </header>
+              <button className="btn ghost" onClick={handleClose} aria-label="Close project modal">
+                Close
+              </button>
+            </div>
+          </header>
+
+          <div>{repo.description}</div>
+        </div>
 
         <div className={styles.modalBody}>
-          <section className="card">
-            <h3>About</h3>
-            <p>{repo.description ?? "No description provided."}</p>
-          </section>
-
-          {repo.portfolioNote && (
+          {repo.portfolioNote != null && repo.portfolioNote.trim().length > 0 && (
             <section className="card">
-              <h3>Portfolio Notes</h3>
-              <pre>{repo.portfolioNote}</pre>
+              <div className={styles.markdownBody}>
+                <Markdown>{repo.portfolioNote}</Markdown>
+              </div>
             </section>
           )}
 
           {repo.readme && (
             <section className="card">
-              <h3>README</h3>
-              <div className={styles.readmeBody}>
+              <h3></h3>
+              <div className={styles.markdownBody}>
                 <Markdown>{repo.readme}</Markdown>
               </div>
             </section>

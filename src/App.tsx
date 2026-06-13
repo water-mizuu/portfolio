@@ -8,6 +8,7 @@ import HomeSection from "./components/sections/HomeSection";
 import ProjectsSection from "./components/sections/ProjectsSection";
 import SkillsSection from "./components/sections/SkillsSection";
 import { SideSection } from "./components/sections/SideSection";
+import InteractiveGridBackground from "./components/InteractiveGridBackground";
 import { GITHUB_REPOS } from "./generated/github-data";
 import { useActiveSection } from "./hooks/useActiveSection";
 import type { GitHubRepo } from "./types";
@@ -18,6 +19,7 @@ export default function App(): ReactNode {
 
   return (
     <div className="site-root">
+      <InteractiveGridBackground />
       <SideSection activeSection={activeSection} handleNavClick={handleNavClick} />
 
       {selectedRepo != null && (

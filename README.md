@@ -1,46 +1,15 @@
-Minimal single-screen portfolio (React + Vite)
+# Minimal Automated Portfolio
 
-Overview
+A single-page portfolio website built with React, TypeScript, and Vite.
+This portfolio automatically pulls, compiles, and ranks project data directly from your GitHub repositories during the build process.
 
-- Single-column, vertical scroll only
-- Minimal, technical tone
-- No photo or logo — headline `Software Engineer`
-- Static site intended for GitHub Pages deployment
+---
 
-Setup
+## Key Features
 
-1. Install dependencies:
+- **Automated Projects Showcase**: Pulls descriptions, READMEs, and custom highlight notes from GitHub.
+- **Build-Time Generation**: Generates static data files pre-build, resulting in zero API latency for visitors and no client-side rate limits.
+- **Curated Highlights**: Opt-in and order your featured projects using `PORTFOLIO.md` files in your repositories.
+- **Developer-First Design**: Scoped styling with CSS Modules, and fully typed TypeScript code.
 
-```bash
-npm install
-```
-
-2. Run dev server:
-
-```bash
-npm run dev
-```
-
-3. Build:
-
-```bash
-npm run build
-```
-
-4. Deploy to GitHub Pages (requires `gh-pages` and a repo configured):
-
-```bash
-npm run deploy
-```
-
-Configuration
-
-- Set your GitHub username in `src/config.ts` (`GITHUB_USERNAME`) so the build-time data generator knows which account to snapshot.
-- Add a `resume.pdf` to the `public/` folder (path `/resume.pdf`) or change `SITE.resumePath` in `src/config.js`.
-- Update contact email and social links in `src/App.tsx`.
-
-Notes
-
-- Repo metadata, README content, and top-level `portfolio.md` files are fetched during `npm run dev` and `npm run build`, then written to `src/generated/github-data.ts`.
-- The app no longer hits the GitHub API in the browser.
-- If you'd like, I can replace the static `you@example.com` and social placeholders with your real links.
+---

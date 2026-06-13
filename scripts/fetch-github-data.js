@@ -91,7 +91,7 @@ async function fetchRepoDetails(owner, repo) {
     live: findGithubPagesUrl(repo.description) || repo.homepage || null,
     language: repo.language,
     readme,
-    portfolioNote,
+    portfolioNote: removeHtmlComments(portfolioNote),
   };
 }
 
@@ -203,4 +203,10 @@ function toTitleCase(value) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
     .join(" ");
+}
+
+function removeHtmlComments(string) {
+  if (string == null) return null;
+
+  return string.replace(/<!--(?:.|\n)*?-->/g, "");
 }
