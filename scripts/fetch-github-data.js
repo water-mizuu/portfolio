@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, cp } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,6 +12,16 @@ const username = await readGitHubUsername(configFile);
 
 if (!username) {
   throw new Error("Could not determine GITHUB_USERNAME from src/config.ts");
+}
+
+// Copy local portfolio assets to public directory for serving
+try {
+  const localPortfolioDir = path.join(rootDir, "portfolio");
+  const publicPortfolioDir = path.join(rootDir, "public", "portfolio");
+  await cp(localPortfolioDir, publicPortfolioDir, { recursive: true });
+  console.log("Successfully copied local portfolio assets to public/portfolio");
+} catch (err) {
+  console.log("Skipping portfolio assets copy:", err.message);
 }
 
 const repos = await fetchAllRepos(username);
@@ -66,10 +76,28 @@ async function fetchAllRepos(owner) {
 }
 
 async function fetchRepoDetails(owner, repo) {
-  const [readme, portfolioNote] = await Promise.all([
-    readRepoReadme(owner, repo.name),
-    readTopLevelPortfolioMd(owner, repo.name),
-  ]);
+  let readme = null;
+  let portfolioNote = null;
+
+  if (repo.name.toLowerCase() === "portfolio") {
+    try {
+      readme = await readFile(path.join(rootDir, "README.md"), "utf8");
+    } catch (err) {
+      console.log("Local README.md read failed, falling back to GitHub:", err.message);
+      readme = await readRepoReadme(owner, repo.name);
+    }
+    try {
+      portfolioNote = await readFile(path.join(rootDir, "portfolio.md"), "utf8");
+    } catch (err) {
+      console.log("Local portfolio.md read failed, falling back to GitHub:", err.message);
+      portfolioNote = await readTopLevelPortfolioMd(owner, repo.name);
+    }
+  } else {
+    [readme, portfolioNote] = await Promise.all([
+      readRepoReadme(owner, repo.name),
+      readTopLevelPortfolioMd(owner, repo.name),
+    ]);
+  }
 
   if (portfolioNote != null) {
     /// If we have a portfolio.md with the rank -1,
@@ -90,6 +118,7 @@ async function fetchRepoDetails(owner, repo) {
     homepage: repo.homepage ?? null,
     live: findGithubPagesUrl(repo.description) || repo.homepage || null,
     language: repo.language,
+    defaultBranch: repo.default_branch || "master",
     readme,
     portfolioNote: removeHtmlComments(portfolioNote),
   };
@@ -210,3 +239,4 @@ function removeHtmlComments(string) {
 
   return string.replace(/<!--(?:.|\n)*?-->/g, "");
 }
+

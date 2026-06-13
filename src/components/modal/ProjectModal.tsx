@@ -1,6 +1,6 @@
-import Markdown from "marked-react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import type { GitHubRepo } from "../../types";
+import ProjectCardSection from "./ProjectCardSection";
 import styles from "./ProjectModal.module.css";
 
 interface Props {
@@ -15,7 +15,6 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
   useEffect(() => {
     // entrance animation
     requestAnimationFrame(() => setVisible(true));
-    return () => {};
   }, []);
 
   useEffect(() => {
@@ -30,7 +29,6 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
     if (closingRef.current) return;
     closingRef.current = true;
     setVisible(false);
-    // wait for CSS transition then call onClose
     window.setTimeout(() => onClose(), 220);
   }
 
@@ -68,22 +66,17 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
         </div>
 
         <div className={styles.modalBody}>
-          {repo.portfolioNote != null && repo.portfolioNote.trim().length > 0 && (
-            <section className="card">
-              <div className={styles.markdownBody}>
-                <Markdown>{repo.portfolioNote}</Markdown>
-              </div>
-            </section>
-          )}
+          <ProjectCardSection
+            content={repo.portfolioNote || ""}
+            repoUrl={repo.url}
+            defaultBranch={repo.defaultBranch}
+          />
 
-          {repo.readme && (
-            <section className="card">
-              <h3></h3>
-              <div className={styles.markdownBody}>
-                <Markdown>{repo.readme}</Markdown>
-              </div>
-            </section>
-          )}
+          <ProjectCardSection
+            content={repo.readme || ""}
+            repoUrl={repo.url}
+            defaultBranch={repo.defaultBranch}
+          />
         </div>
       </div>
     </div>

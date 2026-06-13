@@ -21,6 +21,7 @@ export interface GitHubRepo {
   homepage: string | null;
   live: string | null;
   language: string | null;
+  defaultBranch?: string;
   readme?: string | null;
   portfolioNote?: string | null;
 }

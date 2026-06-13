@@ -1,5 +1,8 @@
 <!-- rank: 3 -->
 
+![Landing Page#](./public/portfolio/portfolio-front.png)
+![Back Page#](./public/portfolio/portfolio-back.png)
+
 ### The Goal
 
 I wanted a modern, fast, and automated way to showcase my software engineering work without the overhead of manually updating a CMS or copying-and-pasting details every time I update a project.
@@ -10,7 +13,7 @@ This portfolio acts as a static React application that automatically fetches, fi
 - **Frontend Stack**: Built with React 19, TypeScript, and Vite for fast development and optimized production builds.
 - **Custom Styling**: Utilizes scoped CSS Modules to ensure styling integrity without the bloat of large framework dependencies.
 - **Build-time Automation**: Uses a custom Node.js script (`fetch-github-data.js`) with the GitHub API to query repository structures, parse readme files, and extract custom portfolio metadata.
-- **Opt-in & Curated Ranking**: A custom opt-in mechanism that scans for a `PORTFOLIO.md` file and uses a hidden comment (e.g. `<!-- rank: 1 -->`) to determine order, allowing me to easily highlight my best work.
+- **Opt-in & Curated Ranking**: A custom opt-in mechanism that scans for a `PORTFOLIO.md` file and uses a hidden comment to determine order, allowing me to easily highlight my best work.
 
 ### What I Learned
 
