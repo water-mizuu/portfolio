@@ -2,7 +2,7 @@
   max-width: var(--max-width);
   margin: 0 auto;
   /* Reserve more space so the main body sits farther from the sidebar */
-  padding: 48px 20px 48px 84px;
+  padding: 48px 48px 48px 84px;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -17,7 +17,7 @@
 @media (max-width: 720px) {
   /* remove reserved padding on small screens */
   .container {
-    padding-left: 48px;
+    padding-left: 20px;
   }
 }
 
