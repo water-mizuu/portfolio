@@ -7,46 +7,29 @@ interface Props {
   handleNavClick: (event: MouseEvent<HTMLButtonElement>, sectionId: SectionId) => void;
 }
 
+// prettier-ignore
+const sections = [
+  { name: "Home",     id: "home"     },
+  { name: "About",    id: "about"    },
+  { name: "Skills",   id: "skills"   },
+  { name: "Projects", id: "projects" },
+  { name: "Contact",  id: "contact"  },
+] as const satisfies { name: string; id: SectionId }[];
+
 export function SideSection({ activeSection, handleNavClick }: Props): ReactNode {
   return (
     <aside className={styles.vbar} aria-hidden="false">
       <nav className={styles.vnav} aria-label="Primary">
-        <button
-          type="button"
-          className={activeSection === "home" ? styles.active : ""}
-          onClick={(event) => handleNavClick(event, "home")}
-        >
-          Home
-        </button>
-        <button
-          type="button"
-          className={activeSection === "about" ? styles.active : ""}
-          onClick={(event) => handleNavClick(event, "about")}
-        >
-          About
-        </button>
-        <button
-          type="button"
-          className={activeSection === "skills" ? styles.active : ""}
-          onClick={(event) => handleNavClick(event, "skills")}
-        >
-          Skills
-        </button>
-        <button
-          type="button"
-          className={activeSection === "projects" ? styles.active : ""}
-          onClick={(event) => handleNavClick(event, "projects")}
-        >
-          Projects
-        </button>
-        <button
-          type="button"
-          className={activeSection === "contact" ? styles.active : ""}
-          onClick={(event) => handleNavClick(event, "contact")}
-        >
-          Contact
-        </button>
-
+        {sections.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            className={activeSection === v.id ? styles.active : ""}
+            onClick={(e) => handleNavClick(e, v.id)}
+          >
+            {v.name}
+          </button>
+        ))}
       </nav>
     </aside>
   );

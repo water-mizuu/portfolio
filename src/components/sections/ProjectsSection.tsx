@@ -40,7 +40,7 @@ function More({ setShownRepoCount, remaining }: MoreProps): ReactElement {
   return (
     <>
       {remaining > 0 && (
-        <button className="btn" onClick={() => setShownRepoCount((curr) => curr + 5)}>
+        <button type="button" className="btn" onClick={() => setShownRepoCount((c) => c + 5)}>
           Show More {`+${remaining} remaining`}
         </button>
       )}

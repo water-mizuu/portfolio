@@ -67,6 +67,7 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
                   Repo
                 </a>
                 <button
+                  type="button"
                   className="btn ghost"
                   onClick={handleClose}
                   aria-label="Close project modal"

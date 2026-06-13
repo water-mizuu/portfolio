@@ -22,21 +22,23 @@ export default function SkillsSection(): ReactElement {
   ];
 
   return (
-    <section id="skills" className={`${styles.skills} card`}>
+    <section id="skills" className={styles.skills}>
       <h2>Skills</h2>
-      <div className={styles.grid}>
-        {categories.map((cat) => (
-          <div key={cat.title} className={styles.category}>
-            <h3>{cat.title}</h3>
-            <div className={styles.tags}>
-              {cat.items.map((item) => (
-                <span key={item} className={styles.tag}>
-                  {item}
-                </span>
-              ))}
+      <div className="card">
+        <div className={styles.grid}>
+          {categories.map((cat) => (
+            <div key={cat.title} className={styles.category}>
+              <h3>{cat.title}</h3>
+              <div className={styles.tags}>
+                {cat.items.map((item) => (
+                  <span key={item} className={styles.tag}>
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

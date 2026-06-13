@@ -4,9 +4,10 @@ import styles from "./ContactSection.module.css";
 
 export default function ContactSection(): ReactElement {
   return (
-    <section id="contact" className={`${styles.contact} card`}>
+    <section id="contact" className={styles.contact}>
       <h2>Contact</h2>
-      <div className={styles.contactRow}>
+      <div className="card">
+        <div className={styles.contactRow}>
         <a
           href={`mailto:${EMAIL}`}
           className={styles.contactButton}
@@ -77,6 +78,7 @@ export default function ContactSection(): ReactElement {
             </svg>
           </a>
         )}
+      </div>
       </div>
     </section>
   );

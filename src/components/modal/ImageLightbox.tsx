@@ -44,6 +44,7 @@ export default function ImageLightbox({ src, alt, onClose }: ImageLightboxProps)
       }}
     >
       <button
+        type="button"
         className={styles.lightboxClose}
         onClick={handleClose}
         aria-label="Close image preview"

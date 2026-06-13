@@ -1,4 +1,4 @@
-export type SectionId = "home" | "about" | "projects" | "repo-notes" | "skills" | "contact";
+export type SectionId = "home" | "about" | "projects" | "skills" | "contact";
 
 export interface SiteConfig {
   // name: string;
