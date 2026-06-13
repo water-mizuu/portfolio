@@ -24,51 +24,52 @@ export default function ProjectCardSection({
 
   // If there is no text left after stripping images, and there are no images, render nothing
   if (cleanContent.trim().length === 0 && cardImages.length === 0) return null;
-
-  const hasImages = cardImages.length > 0;
-
-  return hasImages ? (
-    <div className={styles.cardGrid}>
+  if (cardImages.length > 0) {
+    return (
+      <div className={styles.cardGrid}>
+        <section className="card">
+          {title && <h3>{title}</h3>}
+          <div className={styles.markdownBody}>
+            <Markdown>{cleanContent}</Markdown>
+          </div>
+        </section>
+        <div className={styles.rightColumn}>
+          {cardImages.map((img, index) => {
+            const resolvedUrl = resolveImageUrl(img.url, repoUrl, defaultBranch);
+            return (
+              <div key={index} className={styles.imageCardWrapper}>
+                <div
+                  className={styles.imageMockup}
+                  onClick={() => onImageClick?.(resolvedUrl, img.alt)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View image: ${img.alt || "Project image"}`}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onImageClick?.(resolvedUrl, img.alt);
+                    }
+                  }}
+                >
+                  <img src={resolvedUrl} alt={img.alt} />
+                </div>
+                {img.alt && <p className={styles.imageCaption}>“{img.alt}”</p>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  } else {
+    return (
       <section className="card">
-        {title && <h3 style={{ marginBottom: "1rem" }}>{title}</h3>}
+        {title && <h3>{title}</h3>}
         <div className={styles.markdownBody}>
           <Markdown>{cleanContent}</Markdown>
         </div>
       </section>
-      <div className={styles.rightColumn}>
-        {cardImages.map((img, index) => {
-          const resolvedUrl = resolveImageUrl(img.url, repoUrl, defaultBranch);
-          return (
-            <div key={index} className={styles.imageCardWrapper}>
-              <div
-                className={styles.imageMockup}
-                onClick={() => onImageClick?.(resolvedUrl, img.alt)}
-                role="button"
-                tabIndex={0}
-                aria-label={`View image: ${img.alt || "Project image"}`}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onImageClick?.(resolvedUrl, img.alt);
-                  }
-                }}
-              >
-                <img src={resolvedUrl} alt={img.alt} />
-              </div>
-              {img.alt && <p className={styles.imageCaption}>“{img.alt}”</p>}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  ) : (
-    <section className="card">
-      {title && <h3 style={{ marginBottom: "1rem" }}>{title}</h3>}
-      <div className={styles.markdownBody}>
-        <Markdown>{cleanContent}</Markdown>
-      </div>
-    </section>
-  );
+    );
+  }
 }
 
 interface ExtractedImage {

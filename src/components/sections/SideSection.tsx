@@ -14,7 +14,7 @@ const sections = [
   { name: "Skills",   id: "skills"   },
   { name: "Projects", id: "projects" },
   { name: "Contact",  id: "contact"  },
-] as const satisfies { name: string; id: SectionId }[];
+] as const satisfies readonly { name: string; id: SectionId }[];
 
 export function SideSection({ activeSection, handleNavClick }: Props): ReactNode {
   return (
