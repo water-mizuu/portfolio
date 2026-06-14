@@ -5,10 +5,9 @@ import styles from "./ProjectsSection.module.css";
 
 interface Props {
   repos: GitHubRepo[];
-  onOpen(repo: GitHubRepo): void;
 }
 
-export default function ProjectsSection({ repos, onOpen }: Props): ReactElement {
+export default function ProjectsSection({ repos }: Props): ReactElement {
   const [shownRepoCount, setShownRepoCount] = useState<number>(5);
   const shownRepos = repos.slice(0, shownRepoCount);
 
@@ -23,7 +22,7 @@ export default function ProjectsSection({ repos, onOpen }: Props): ReactElement 
         )}
 
         {shownRepos.map((repo) => (
-          <ProjectCard key={repo.id} repo={repo} onOpen={(r) => onOpen(r)} />
+          <ProjectCard key={repo.id} repo={repo} />
         ))}
 
         <More setShownRepoCount={setShownRepoCount} remaining={repos.length - shownRepoCount} />

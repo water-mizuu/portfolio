@@ -1,4 +1,4 @@
-import { type ReactNode, createContext, useCallback, useRef, useState } from "react";
+import { ReactElement, type ReactNode, createContext, useCallback, useState } from "react";
 import styles from "./App.module.css";
 import InteractiveGridBackground from "./components/InteractiveGridBackground";
 import ImageLightbox from "./components/modal/ImageLightbox";
@@ -11,16 +11,15 @@ import { SideSection } from "./components/sections/SideSection";
 import SkillsSection from "./components/sections/SkillsSection";
 import { GITHUB_REPOS } from "./generated/github-data";
 import { useActiveSection } from "./hooks/useActiveSection";
-import type { GitHubRepo } from "./types";
+import { GitHubRepo } from "./types";
 
-export interface ModalLayer {
-  type: "project" | "image" | string;
-  payload: any;
-}
+export type ModalLayer =
+  | { type: "project"; payload: GitHubRepo }
+  | { type: "image"; payload: { src: string; alt: string } };
 
 export const ModalContext = createContext<{
   activeModal: ModalLayer | null;
-  openModal: (type: string, payload: any) => void;
+  openModal: (layer: ModalLayer) => void;
   closeModal: () => void;
 }>({
   activeModal: null,
@@ -30,10 +29,34 @@ export const ModalContext = createContext<{
 
 export default function App(): ReactNode {
   const { activeSection, handleNavClick } = useActiveSection();
+
+  return (
+    <ModalProvider>
+      <div className="site-root">
+        <InteractiveGridBackground />
+        <SideSection activeSection={activeSection} handleNavClick={handleNavClick} />
+
+        <main className={styles.container}>
+          <HomeSection />
+          <AboutSection />
+          <SkillsSection />
+          <ProjectsSection repos={GITHUB_REPOS} />
+          <ContactSection />
+
+          <footer className={styles.footer}>
+            <small>© {new Date().getFullYear()} • water-mizuu</small>
+          </footer>
+        </main>
+      </div>
+    </ModalProvider>
+  );
+}
+
+function ModalProvider({ children }: { children: ReactElement | ReactElement[] }): ReactElement {
   const [modalStack, setModalStack] = useState<ModalLayer[]>([]);
 
-  const openModal = useCallback((type: string, payload: any) => {
-    setModalStack((prev) => [...prev, { type, payload }]);
+  const openModal = useCallback((layer: ModalLayer) => {
+    setModalStack((prev) => [...prev, layer]);
   }, []);
 
   const closeModal = useCallback(() => {
@@ -48,45 +71,29 @@ export default function App(): ReactNode {
         closeModal,
       }}
     >
-      <div className="site-root">
-        <InteractiveGridBackground />
-        <SideSection activeSection={activeSection} handleNavClick={handleNavClick} />
-
-        {modalStack.map((layer, index) => {
-          if (layer.type === "project") {
-            return (
-              <ProjectModal
-                key={`project-${layer.payload.name}`}
-                repo={layer.payload}
-                onClose={closeModal}
-              />
-            );
-          }
-          if (layer.type === "image") {
-            return (
-              <ImageLightbox
-                key={`image-${layer.payload.src}`}
-                src={layer.payload.src}
-                alt={layer.payload.alt}
-                onClose={closeModal}
-              />
-            );
-          }
-          return <></>;
-        })}
-
-        <main className={styles.container}>
-          <HomeSection />
-          <AboutSection />
-          <SkillsSection />
-          <ProjectsSection repos={GITHUB_REPOS} onOpen={(r) => openModal("project", r)} />
-          <ContactSection />
-
-          <footer className={styles.footer}>
-            <small>© {new Date().getFullYear()} • water-mizuu</small>
-          </footer>
-        </main>
-      </div>
+      {children}
+      {modalStack.map((layer) => {
+        if (layer.type === "project") {
+          return (
+            <ProjectModal
+              key={`project-${layer.payload.name}`}
+              repo={layer.payload}
+              onClose={closeModal}
+            />
+          );
+        }
+        if (layer.type === "image") {
+          return (
+            <ImageLightbox
+              key={`image-${layer.payload.src}`}
+              src={layer.payload.src}
+              alt={layer.payload.alt}
+              onClose={closeModal}
+            />
+          );
+        }
+        return <></>;
+      })}
     </ModalContext.Provider>
   );
 }

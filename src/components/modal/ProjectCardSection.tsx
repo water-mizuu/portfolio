@@ -44,14 +44,16 @@ export default function ProjectCardSection({
               <div key={index} className={styles.imageCardWrapper}>
                 <div
                   className={styles.imageMockup}
-                  onClick={() => openModal("image", { src: resolvedUrl, alt: img.alt })}
+                  onClick={() =>
+                    openModal({ type: "image", payload: { src: resolvedUrl, alt: img.alt } })
+                  }
                   role="button"
                   tabIndex={0}
                   aria-label={`View image: ${img.alt || "Project image"}`}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      openModal("image", { src: resolvedUrl, alt: img.alt });
+                      openModal({ type: "image", payload: { src: resolvedUrl, alt: img.alt } });
                     }
                   }}
                 >

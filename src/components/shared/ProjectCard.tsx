@@ -1,18 +1,18 @@
-import type { ReactElement } from "react";
+import { useContext, type ReactElement } from "react";
+import { ModalContext } from "../../App";
 import type { GitHubRepo } from "../../types";
 import styles from "./ProjectCard.module.css";
 
 interface Props {
   repo: GitHubRepo;
-  onOpen?: (repo: GitHubRepo) => void;
 }
 
-export default function ProjectCard({ repo, onOpen }: Props): ReactElement {
+export default function ProjectCard({ repo }: Props): ReactElement {
+  const modalContext = useContext(ModalContext);
+  const openRepo = () => modalContext.openModal({ type: "project", payload: repo });
+
   return (
-    <article
-      onClick={() => onOpen && onOpen(repo)}
-      className={`${onOpen && styles.clickableCard} card`}
-    >
+    <article onClick={openRepo} className={`${styles.clickableCard} card`}>
       <h3 className={styles.cardTitle}>
         <a href={repo.url} target="_blank" rel="noreferrer">
           {repo.name}
@@ -30,7 +30,7 @@ export default function ProjectCard({ repo, onOpen }: Props): ReactElement {
           <a href={repo.url} target="_blank" rel="noreferrer">
             Repo
           </a>
-          <button onClick={() => onOpen && onOpen(repo)} className="btn ghost" type="button">
+          <button onClick={openRepo} className="btn ghost" type="button">
             Details
           </button>
         </div>
