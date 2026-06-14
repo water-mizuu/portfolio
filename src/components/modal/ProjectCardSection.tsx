@@ -1,5 +1,6 @@
 import Markdown from "marked-react";
-import { ReactElement } from "react";
+import { ReactElement, useContext } from "react";
+import { ModalContext } from "../../App";
 import styles from "./ProjectModal.module.css";
 
 interface ProjectCardSectionProps {
@@ -7,7 +8,13 @@ interface ProjectCardSectionProps {
   content: string;
   repoUrl: string;
   defaultBranch?: string;
-  onImageClick?: (url: string, alt: string) => void;
+}
+
+export function hasProjectCardContent(content: string | undefined | null): boolean {
+  if (!content || content.trim().length === 0) return false;
+  const cardImages = extractImagesFromMarkdown(content);
+  const cleanContent = removeImagesFromMarkdown(content);
+  return cleanContent.trim().length > 0 || cardImages.length > 0;
 }
 
 export default function ProjectCardSection({
@@ -15,15 +22,12 @@ export default function ProjectCardSection({
   content,
   repoUrl,
   defaultBranch = "main",
-  onImageClick,
-}: ProjectCardSectionProps): ReactElement | null {
-  if (!content || content.trim().length === 0) return null;
+}: ProjectCardSectionProps): ReactElement {
+  const { openModal } = useContext(ModalContext);
 
   const cardImages = extractImagesFromMarkdown(content);
   const cleanContent = removeImagesFromMarkdown(content);
 
-  // If there is no text left after stripping images, and there are no images, render nothing
-  if (cleanContent.trim().length === 0 && cardImages.length === 0) return null;
   if (cardImages.length > 0) {
     return (
       <div className={styles.cardGrid}>
@@ -40,14 +44,14 @@ export default function ProjectCardSection({
               <div key={index} className={styles.imageCardWrapper}>
                 <div
                   className={styles.imageMockup}
-                  onClick={() => onImageClick?.(resolvedUrl, img.alt)}
+                  onClick={() => openModal("image", { src: resolvedUrl, alt: img.alt })}
                   role="button"
                   tabIndex={0}
                   aria-label={`View image: ${img.alt || "Project image"}`}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      onImageClick?.(resolvedUrl, img.alt);
+                      openModal("image", { src: resolvedUrl, alt: img.alt });
                     }
                   }}
                 >

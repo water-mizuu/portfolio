@@ -20,10 +20,12 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@rolldown/plugin-babel": "^0.2.3",
     "@types/node": "^20.0.0",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
+    "babel-plugin-react-compiler": "^1.0.0",
     "gh-pages": "^5.0.0",
     "typescript": "^5.4.0",
     "typescript-plugin-css-modules": "^5.2.0",

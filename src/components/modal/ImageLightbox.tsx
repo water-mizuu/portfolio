@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
+import { ModalContext } from "../../App";
 import styles from "./ImageLightbox.module.css";
 
 interface ImageLightboxProps {
@@ -9,6 +10,8 @@ interface ImageLightboxProps {
 
 export default function ImageLightbox({ src, alt, onClose }: ImageLightboxProps): ReactElement {
   const [visible, setVisible] = useState(false);
+  const { activeModal } = useContext(ModalContext);
+  const isTop = activeModal?.type === "image";
 
   useEffect(() => {
     // Entrance transition animation
@@ -17,14 +20,14 @@ export default function ImageLightbox({ src, alt, onClose }: ImageLightboxProps)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && isTop) {
         handleClose();
       }
     };
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [isTop]);
 
   function handleClose() {
     setVisible(false);
