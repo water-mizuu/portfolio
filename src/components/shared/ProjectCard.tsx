@@ -1,5 +1,5 @@
 import { useContext, type ReactElement } from "react";
-import { ModalContext } from "../../App";
+import { ModalContext } from "../../providers/ModalProvider";
 import type { GitHubRepo } from "../../types";
 import styles from "./ProjectCard.module.css";
 

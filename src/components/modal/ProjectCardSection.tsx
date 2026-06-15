@@ -1,6 +1,6 @@
 import Markdown from "marked-react";
 import { ReactElement, useContext } from "react";
-import { ModalContext } from "../../App";
+import { ModalContext } from "../../providers/ModalProvider";
 import styles from "./ProjectModal.module.css";
 
 interface ProjectCardSectionProps {

@@ -1,8 +1,8 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
-import { ModalContext } from "../../App";
 import type { GitHubRepo } from "../../types";
 import ProjectCardSection, { hasProjectCardContent } from "./ProjectCardSection";
 import styles from "./ProjectModal.module.css";
+import { ModalContext } from "../../providers/ModalProvider";
 
 interface Props {
   repo: GitHubRepo;

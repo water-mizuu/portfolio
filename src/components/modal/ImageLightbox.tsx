@@ -1,5 +1,5 @@
 import { ReactElement, useContext, useEffect, useState } from "react";
-import { ModalContext } from "../../App";
+import { ModalContext } from "../../providers/ModalProvider";
 import styles from "./ImageLightbox.module.css";
 
 interface ImageLightboxProps {
