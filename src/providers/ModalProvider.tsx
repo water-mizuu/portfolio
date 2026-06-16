@@ -1,4 +1,4 @@
-import { createContext, ReactElement, useCallback, useState } from "react";
+import { createContext, ReactElement, ReactNode, useCallback, useState } from "react";
 import ImageLightbox from "../components/modal/ImageLightbox";
 import ProjectModal from "../components/modal/ProjectModal";
 import { GitHubRepo } from "../types";
@@ -17,11 +17,11 @@ export const ModalContext = createContext<{
   closeModal: () => {},
 });
 
-export function ModalProvider({
-  children,
-}: {
-  children: ReactElement | ReactElement[];
-}): ReactElement {
+interface Props {
+  children: ReactNode;
+}
+
+export function ModalProvider({ children }: Props): ReactElement {
   const [modalStack, setModalStack] = useState<ModalLayer[]>([]);
 
   const openModal = useCallback((layer: ModalLayer) => {

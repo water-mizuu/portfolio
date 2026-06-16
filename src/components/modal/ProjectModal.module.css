@@ -84,10 +84,34 @@
 }
 
 .markdownBody {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  display: flow-root;
   line-height: 1.5;
+}
+
+.markdownImageWrapper {
+  display: block;
+  float: right;
+  width: 40%;
+  max-width: 100%;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdownBody p,
+.markdownBody h1,
+.markdownBody h2,
+.markdownBody h3,
+.markdownBody h4,
+.markdownBody h5,
+.markdownBody ul,
+.markdownBody ol,
+.markdownBody pre {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.markdownBody > *:last-child {
+  margin-bottom: 0;
 }
 
 .cardGrid {
@@ -108,31 +132,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.imageMockup {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  transition:
-    transform 0.3s ease,
-    border-color 0.3s ease;
-  cursor: pointer;
-}
-
-.imageMockup:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.imageMockup img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 8px;
 }
 
 .imageCaption {

@@ -1,7 +1,6 @@
 <!-- rank: 3 -->
 
 ![Landing Page#](./public/portfolio/portfolio-front.png)
-![Back Page#](./public/portfolio/portfolio-back.png)
 
 I wanted a modern, fast, and automated way to showcase my software engineering work without the overhead of manually updating a CMS or copying-and-pasting details every time I update a project.
 This portfolio acts as a static React application that automatically fetches, filters, and parses live data directly from my GitHub repositories at build time.
@@ -12,6 +11,8 @@ This portfolio acts as a static React application that automatically fetches, fi
 - **Custom Styling**: Utilizes scoped CSS Modules to ensure styling integrity without the bloat of large framework dependencies.
 - **Build-time Automation**: Uses a custom Node.js script (`fetch-github-data.js`) with the GitHub API to query repository structures, parse readme files, and extract custom portfolio metadata.
 - **Opt-in**: A custom opt-in mechanism that scans for a `PORTFOLIO.md` file and uses a hidden comment to determine order, allowing me to easily highlight my best work.
+
+![Back Page#](./public/portfolio/portfolio-back.png)
 
 ### What I Learned
 

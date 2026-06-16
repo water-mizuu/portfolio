@@ -1,8 +1,8 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
-import type { GitHubRepo } from "../../types";
-import ProjectCardSection, { hasProjectCardContent } from "./ProjectCardSection";
-import styles from "./ProjectModal.module.css";
 import { ModalContext } from "../../providers/ModalProvider";
+import type { GitHubRepo } from "../../types";
+import ProjectCardSection from "./ProjectCardSection";
+import styles from "./ProjectModal.module.css";
 
 interface Props {
   repo: GitHubRepo;
@@ -80,20 +80,10 @@ export default function ProjectModal({ repo, onClose }: Props): ReactElement {
         </div>
 
         <div className={styles.modalBody}>
-          {hasProjectCardContent(repo.portfolioNote) && (
-            <ProjectCardSection
-              content={repo.portfolioNote || ""}
-              repoUrl={repo.url}
-              defaultBranch={repo.defaultBranch}
-            />
-          )}
+          <ProjectCardSection content={repo.portfolioNote || ""} />
 
-          {hasProjectCardContent(repo.readme) && (
-            <ProjectCardSection
-              content={repo.readme || ""}
-              repoUrl={repo.url}
-              defaultBranch={repo.defaultBranch}
-            />
+          {repo.readme != null && repo.readme!.trim().length > 0 && (
+            <ProjectCardSection content={repo.readme || ""} />
           )}
         </div>
       </div>
