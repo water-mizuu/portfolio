@@ -4,7 +4,6 @@ export const GITHUB_USERNAME = "water-mizuu";
 export const REPO_COUNT = 6;
 
 export const SITE: SiteConfig = {
-  ///
   headline: "John Michael Zuñiga",
   tagline: "Software Engineer & AI/ML Engineer",
   resumePath: "/curriculum-vitae.pdf",
@@ -14,7 +13,6 @@ export const EMAIL = "jmt.zuniga.z@gmail.com";
 
 export const SOCIALS: SocialLinks = {
   github: `https://github.com/${GITHUB_USERNAME}`,
-  linkedin: "https://www.linkedin.com/in/john-michael-zuniga-106982335/",
+  linkedin: "https://www.linkedin.com/in/jmt-zuniga/",
   twitter: "",
 };
-
