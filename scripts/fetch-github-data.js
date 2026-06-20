@@ -1,6 +1,8 @@
-import { cp as copy, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { remark } from "remark";
+import { visit } from "unist-util-visit";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,15 +17,6 @@ if (!username) {
 }
 
 // Copy local portfolio assets to public directory for serving
-try {
-  const localPortfolioDir = path.join(rootDir, "portfolio");
-  const publicPortfolioDir = path.join(rootDir, "public", "portfolio");
-  await copy(localPortfolioDir, publicPortfolioDir, { recursive: true });
-  console.log("Successfully copied local portfolio assets to public/portfolio");
-} catch (err) {
-  console.log("Skipping portfolio assets copy:", err.message);
-}
-
 const repos = await fetchAllRepos(username);
 const repoData = await Promise.all(repos.map((repo) => fetchRepoDetails(username, repo)));
 const keptRepoData = repoData.filter((v) => v != null);
@@ -94,28 +87,10 @@ async function fetchAllRepos(owner) {
  * @returns {Promise<any | null>} A promise that resolves to the formatted repository data, or null if it should be excluded.
  */
 async function fetchRepoDetails(owner, repo) {
-  let readme = null;
-  let portfolioNote = null;
-
-  if (repo.name.toLowerCase() === "portfolio") {
-    try {
-      readme = await readFile(path.join(rootDir, "README.md"), "utf8");
-    } catch (err) {
-      console.log("Local README.md read failed, falling back to GitHub:", err.message);
-      readme = await readRepoReadme(owner, repo.name);
-    }
-    try {
-      portfolioNote = await readFile(path.join(rootDir, "portfolio.md"), "utf8");
-    } catch (err) {
-      console.log("Local portfolio.md read failed, falling back to GitHub:", err.message);
-      portfolioNote = await readTopLevelPortfolioMd(owner, repo.name);
-    }
-  } else {
-    [readme, portfolioNote] = await Promise.all([
-      readRepoReadme(owner, repo.name),
-      readTopLevelPortfolioMd(owner, repo.name),
-    ]);
-  }
+  const [readme, portfolioNote] = await Promise.all([
+    readRepoReadme(owner, repo.name),
+    readTopLevelPortfolioMd(owner, repo.name).then((v) => convertImages(owner, repo.name, v)),
+  ]);
 
   /// We now only display the repositories with the PORTFOLIO.md as to
   ///   ensure that this is only opt-in.
@@ -144,6 +119,42 @@ async function fetchRepoDetails(owner, repo) {
     readme,
     portfolioNote: portfolioNote != null ? removeHtmlComments(portfolioNote) : undefined,
   };
+}
+
+async function replaceNewUrl(owner, repoName, path) {
+  const api = new URL(path, `https://api.github.com/repos/${owner}/${repoName}/contents/`);
+  const concatenated = String(api);
+  const response = await fetch(concatenated);
+  if (!response.ok) return null;
+
+  const body = await response.json();
+  const downloadUrl = body["download_url"];
+
+  return downloadUrl;
+}
+
+async function convertImages(owner, repoName, repoMd) {
+  if (repoMd == null) {
+    return null;
+  }
+
+  const file = await remark()
+    .use(() => async (tree) => {
+      const promises = [];
+      visit(tree, "image", (node) => {
+        promises.push(
+          (async () => {
+            node.url = await replaceNewUrl(owner, repoName, node.url);
+          })(),
+        );
+      });
+      await Promise.all(promises);
+    })
+    .process(repoMd);
+
+  /// Wait for all of them to process.
+
+  return String(file);
 }
 
 /**
@@ -198,6 +209,7 @@ async function readTopLevelPortfolioMd(owner, repoName) {
  */
 async function readRepoReadme(owner, repoName) {
   try {
+    console.log(`https://api.github.com/repos/${owner}/${repoName}/contents/`);
     const response = await fetchGh(`https://api.github.com/repos/${owner}/${repoName}/readme`);
     if (!response.ok) return null;
 

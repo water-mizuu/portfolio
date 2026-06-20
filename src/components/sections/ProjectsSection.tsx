@@ -25,7 +25,9 @@ export default function ProjectsSection({ repos }: Props): ReactElement {
           <ProjectCard key={repo.id} repo={repo} />
         ))}
 
-        <More setShownRepoCount={setShownRepoCount} remaining={repos.length - shownRepoCount} />
+        {repos.length > shownRepoCount && (
+          <More setShownRepoCount={setShownRepoCount} remaining={repos.length - shownRepoCount} />
+        )}
       </div>
     </section>
   );
@@ -37,12 +39,8 @@ type MoreProps = {
 };
 function More({ setShownRepoCount, remaining }: MoreProps): ReactElement {
   return (
-    <>
-      {remaining > 0 && (
-        <button type="button" className="btn" onClick={() => setShownRepoCount((c) => c + 5)}>
-          Show More {`+${remaining} remaining`}
-        </button>
-      )}
-    </>
+    <button type="button" className="btn" onClick={() => setShownRepoCount((c) => c + 5)}>
+      Show More {`+${remaining} remaining`}
+    </button>
   );
 }
