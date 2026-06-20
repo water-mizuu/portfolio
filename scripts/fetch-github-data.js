@@ -87,25 +87,13 @@ async function fetchAllRepos(owner) {
  * @returns {Promise<any | null>} A promise that resolves to the formatted repository data, or null if it should be excluded.
  */
 async function fetchRepoDetails(owner, repo) {
-  const [readme, portfolioNote] = await Promise.all([
-    readRepoReadme(owner, repo.name),
-    readTopLevelPortfolioMd(owner, repo.name).then((v) => convertImages(owner, repo.name, v)),
-  ]);
+  const portfolioMd = await readTopLevelPortfolioMd(owner, repo.name);
+  if (portfolioMd == null) return null;
 
-  /// We now only display the repositories with the PORTFOLIO.md as to
-  ///   ensure that this is only opt-in.
+  const portfolioNote = await processPortfolioMarkdown(owner, repo.name, portfolioMd);
   if (portfolioNote == null) return null;
 
-  /// If we have a portfolio.md with the rank -1,
-  ///   We explicitly opt to hide it from our portfolio.
-  ///   TODO: Remove this. Since the PORTFOLIO.md is opt-in,
-  ///     this shouldn't be a thing anymore.
-  for (const line of portfolioNote.split("\n")) {
-    const result = line.match(/\<!--\s*rank:\s*-1\s*-->/);
-    if (result != null) {
-      return null;
-    }
-  }
+  const readme = await readRepoReadme(owner, repo.name);
 
   return {
     id: repo.id,
@@ -117,14 +105,22 @@ async function fetchRepoDetails(owner, repo) {
     language: repo.language,
     defaultBranch: repo.default_branch || "master",
     readme,
-    portfolioNote: portfolioNote != null ? removeHtmlComments(portfolioNote) : undefined,
+    portfolioNote,
   };
 }
 
+/**
+ * Converts a file referenced within GitHub markdown files to their actual URL
+ * within the repository.
+ * @param {string} owner - The GitHub username.
+ * @param {string} repoName - The name of the repository.
+ * @param {string} path - The path of the file being accessed
+ * @returns {Promise<string | null>} The converted raw GitHub URL of the image.
+ */
 async function replaceNewUrl(owner, repoName, path) {
   const api = new URL(path, `https://api.github.com/repos/${owner}/${repoName}/contents/`);
   const concatenated = String(api);
-  const response = await fetch(concatenated);
+  const response = await fetchGh(concatenated);
   if (!response.ok) return null;
 
   const body = await response.json();
@@ -133,26 +129,54 @@ async function replaceNewUrl(owner, repoName, path) {
   return downloadUrl;
 }
 
-async function convertImages(owner, repoName, repoMd) {
-  if (repoMd == null) {
+/**
+ * Processes the PORTFOLIO.md file:
+ * 1. Converts relative image URLs to raw GitHub repository URLs.
+ * 2. Removes all HTML comments.
+ * 3. Triggers repository exclusion (returning null) if `<!-- rank: -1 -->` is found.
+ * @param {string} owner - The GitHub username.
+ * @param {string} repoName - The name of the repository.
+ * @param {string} portfolioMd - The content of the PORTFOLIO.md.
+ * @returns {Promise<string | null>} The processed PORTFOLIO.md content, or null if the repository should be hidden.
+ */
+async function processPortfolioMarkdown(owner, repoName, portfolioMd) {
+  if (portfolioMd == null) {
     return null;
   }
+
+  let isHidden = false;
 
   const file = await remark()
     .use(() => async (tree) => {
       const promises = [];
       visit(tree, "image", (node) => {
         promises.push(
-          (async () => {
-            node.url = await replaceNewUrl(owner, repoName, node.url);
-          })(),
+          replaceNewUrl(owner, repoName, node.url)
+            .then((url) => {
+              console.log(url);
+              node.url = url;
+            })
+            .catch((_) => null),
         );
       });
       await Promise.all(promises);
     })
-    .process(repoMd);
+    .use(() => async (tree) => {
+      visit(tree, "html", (node, index, parent) => {
+        if (node.value.startsWith("<!--") && node.value.endsWith("-->")) {
+          if (/\<!--\s*rank:\s*-1\s*-->/.test(node.value)) {
+            isHidden = true;
+          }
+          parent.children.splice(index, 1);
+          return index;
+        }
+      });
+    })
+    .process(portfolioMd);
 
-  /// Wait for all of them to process.
+  if (isHidden) {
+    return null;
+  }
 
   return String(file);
 }
@@ -209,7 +233,6 @@ async function readTopLevelPortfolioMd(owner, repoName) {
  */
 async function readRepoReadme(owner, repoName) {
   try {
-    console.log(`https://api.github.com/repos/${owner}/${repoName}/contents/`);
     const response = await fetchGh(`https://api.github.com/repos/${owner}/${repoName}/readme`);
     if (!response.ok) return null;
 
@@ -281,7 +304,7 @@ function githubHeaders() {
 function camelToSnakeCase(value) {
   const regex = /((?:[A-Z][a-z])|(?:(?<=[a-z])[^a-z])|(?:(?<=[A-Z])[0-9_]))/g;
 
-  return value.toString().replace(regex, "_$1".toLowerCase());
+  return value.toString().replace(regex, "_$1");
 }
 
 /**
@@ -304,15 +327,4 @@ function toTitleCase(value) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     })
     .join(" ");
-}
-
-/**
- * Removes all HTML comments from a string.
- * @param {string | null} string - The input string containing HTML comments.
- * @returns {string | null} The sanitized string with comments removed, or null if input was null.
- */
-function removeHtmlComments(string) {
-  if (string == null) return null;
-
-  return string.replace(/<!--(?:.|\n)*?-->/g, "");
 }
