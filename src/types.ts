@@ -24,6 +24,7 @@ export interface GitHubRepo {
   defaultBranch?: string;
   readme?: string | null;
   portfolioNote?: string | null;
+  rank: number;
 }
 
 export interface PortfolioNote {

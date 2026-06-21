@@ -20,6 +20,7 @@ if (!username) {
 const repos = await fetchAllRepos(username);
 const repoData = await Promise.all(repos.map((repo) => fetchRepoDetails(username, repo)));
 const keptRepoData = repoData.filter((v) => v != null);
+keptRepoData.sort((a, b) => a.rank - b.rank);
 
 await mkdir(path.dirname(generatedFile), { recursive: true });
 await writeFile(
@@ -90,14 +91,15 @@ async function fetchRepoDetails(owner, repo) {
   const portfolioMd = await readTopLevelPortfolioMd(owner, repo.name);
   if (portfolioMd == null) return null;
 
-  const portfolioNote = await processPortfolioMarkdown(owner, repo.name, portfolioMd);
-  if (portfolioNote == null) return null;
+  const noteInfo = await processPortfolioMarkdown(owner, repo.name, portfolioMd);
+  if (noteInfo == null) return null;
+  const { rank, name, content } = noteInfo;
 
   const readme = await readRepoReadme(owner, repo.name);
 
   return {
     id: repo.id,
-    name: toTitleCase(repo.name),
+    name: name ?? toTitleCase(repo.name),
     description: repo.description,
     url: repo.html_url,
     homepage: repo.homepage ?? null,
@@ -105,7 +107,8 @@ async function fetchRepoDetails(owner, repo) {
     language: repo.language,
     defaultBranch: repo.default_branch || "master",
     readme,
-    portfolioNote,
+    rank,
+    portfolioNote: content,
   };
 }
 
@@ -137,12 +140,16 @@ async function replaceNewUrl(owner, repoName, path) {
  * @param {string} owner - The GitHub username.
  * @param {string} repoName - The name of the repository.
  * @param {string} portfolioMd - The content of the PORTFOLIO.md.
- * @returns {Promise<string | null>} The processed PORTFOLIO.md content, or null if the repository should be hidden.
+ * @returns {Promise<{ rank: number; name: string | null; content: string } | null>}
+ *  The processed PORTFOLIO.md content, or null if the repository should be hidden.
  */
 async function processPortfolioMarkdown(owner, repoName, portfolioMd) {
   if (portfolioMd == null) {
     return null;
   }
+
+  let rank = Number.MAX_SAFE_INTEGER;
+  let name = null;
 
   let isHidden = false;
 
@@ -164,9 +171,20 @@ async function processPortfolioMarkdown(owner, repoName, portfolioMd) {
     .use(() => async (tree) => {
       visit(tree, "html", (node, index, parent) => {
         if (node.value.startsWith("<!--") && node.value.endsWith("-->")) {
-          if (/\<!--\s*rank:\s*-1\s*-->/.test(node.value)) {
-            isHidden = true;
+          const inner = node.value.slice(4, -3);
+          const split = inner.split(":").map((s) => s.trim());
+          if (split.length === 2) {
+            if (split[0] === "rank") {
+              rank = Number.parseInt(split[1]);
+
+              if (rank === -1) {
+                isHidden = true;
+              }
+            } else if (split[0] === "name") {
+              name = split[1];
+            }
           }
+
           parent.children.splice(index, 1);
           return index;
         }
@@ -178,7 +196,11 @@ async function processPortfolioMarkdown(owner, repoName, portfolioMd) {
     return null;
   }
 
-  return String(file);
+  return {
+    rank,
+    name,
+    content: String(file),
+  };
 }
 
 /**
@@ -284,7 +306,7 @@ function githubHeaders() {
   }
 
   const headers = {
-    "Accept": "application/vnd.github.v3+json",
+    Accept: "application/vnd.github.v3+json",
     "User-Agent": "web-portfolio-build-script",
   };
 
